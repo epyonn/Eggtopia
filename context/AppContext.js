@@ -1,19 +1,21 @@
 import React, { createContext, useReducer, useEffect , useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-
 // Creating a new context for our app.
 export const AppContext = createContext();
 
 const initialState = {
+    totalTime : 0,
     expProgress: 0,
     inventory: [
         { id: 1, image: require('../assets/fruits/rainbow_pineapple.png'), name: "rainbow_pineapple" },
         { id: 2, image: require('../assets/fruits/mangosteen.png'), name: 'mangosteen' },
         { id: 3, image: require('../assets/fruits/pear.png'), name: 'pear' },
         { id: 4, image: require('../assets/fruits/blue_pineapple.png'), name: 'blue_pineapple' },
-        { id: 5, image: require('../assets/fruits/blue_pineapple.png'), name: 'blue_pineapple' },
-        { id: 6, image: require('../assets/fruits/pear.png'), name: 'pear'  }, { id: 7 }, { id: 8 }, // Empty slots
+        { id: 5, image: require('../assets/fruits/fruit_group.png'), name: 'fruit_group' },
+        { id: 6, image: require('../assets/fruits/pear.png'), name: 'pear'  }, 
+        { id: 7, image: require('../assets/fruits/water_strawberry.png'), name: 'water_strawberry' }, 
+        { id: 8 }, // Empty slots
         { id: 9 }, { id: 10 }, { id: 11 }, { id: 12 },
         { id: 13 }, { id: 14 }, { id: 15 }, { id: 16 },
         { id: 17 }, { id: 18 }, { id: 19 }, { id: 20 },
@@ -75,7 +77,6 @@ const initialState = {
             walking_image: require('../assets/bird/firstEvo/bird-first-walking.gif'),
             name:'bird-first-evo',
             expProgress: 0
-    
         }, { id: 4 },
         { id: 5 }, { id: 6 }, { id: 7 }, { id: 8 }, // Empty slots
         { id: 9 }, { id: 10 }, { id: 11 }, { id: 12 },
@@ -97,11 +98,9 @@ const initialState = {
     ]
 };
 
-
 // A reducer function to update our state based on actions.
 const reducer = (state, action) => {
     switch (action.type) {
-
         case 'INCREMENT_EXP' :
             // Extract the selected_pet from state
             const selectedPet = state.selected_pet[0]; // Assuming there's only one selected pet
@@ -111,13 +110,13 @@ const reducer = (state, action) => {
             }
             // Return the updated state
             return { ...state };
+
         case 'SET_INVENTORY':
             // Return a new state with updated inventory
             return {...state, inventory: action.payload};
 
         case 'SELECT_PET':
             return{...state, selected_pet: [action.payload]};
-
 
         case 'SET_PET_INVENTORY':
             return {...state, pet_inventory: action.payload};
@@ -128,6 +127,8 @@ const reducer = (state, action) => {
         case 'SET_INITIAL_STATE':
             return {...state, ...action.payload};
 
+        case 'SET_TOTAL_TIME':
+            return {...state, totalTime: action.payload}
         default: 
             return state;
     }
@@ -136,9 +137,9 @@ const reducer = (state, action) => {
 // Help function to load state from AsyncStorage
 const loadState = async () => {
     try {
-        //const serializedState = await AsyncStorage.getItem('appState');
+        const serializedState = await AsyncStorage.getItem('appState');
         // Reset State 
-        const serializedState = await AsyncStorage.setItem('appState', JSON.stringify(initialState));
+        //const serializedState = await AsyncStorage.setItem('appState', JSON.stringify(initialState));
 
         if (serializedState === null) {
             return undefined;

@@ -110,8 +110,11 @@ const CountdownTimer = ({ initialHours = 0, initialMinutes = 0, initialSeconds =
                             setShowTreasureChest(true);
 
                             const totalTimeInMinutes = (startHours * 60) + startMinutes;
-                            setTotalTime(prevTime => prevTime + totalTimeInMinutes);
-
+                            let updatedTotalMinutes = state.totalTime + totalTimeInMinutes;
+                            dispatch({ type:'SET_TOTAL_TIME', payload: updatedTotalMinutes})
+                            console.log("total time " + state.totalTime)
+                            
+                            //setTotalTime(prevTime => prevTime + totalTimeInMinutes);
 
                         }
                         setIsManuallyFinished(false); // Reset the manual finish flag
@@ -136,9 +139,6 @@ const CountdownTimer = ({ initialHours = 0, initialMinutes = 0, initialSeconds =
 
     return (
         <View style={styles.container}>
-          <Text style={{...styles.timerText, fontSize: 20}}>
-            Total Time: {Math.floor(totalTime / 60)} hours {totalTime % 60} minutes
-          </Text>
           <TreasureChest 
               isVisible={showTreasureChest}
               onClose={() => setShowTreasureChest(false)}

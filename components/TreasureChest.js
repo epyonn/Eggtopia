@@ -11,7 +11,7 @@ const TreasureChest = ({ isVisible, onClose }) => { //state being passed in from
 
     const genRandomKey = () => {
         const randomKey = Math.floor(Math.random() * 10000);
-        console.log('generated key', randomKey)
+        //console.log('generated key', randomKey)
         return randomKey;
     }
 
@@ -47,10 +47,8 @@ const TreasureChest = ({ isVisible, onClose }) => { //state being passed in from
                 if (randomFruit.type  === 'egg') {
                     // Update the local state to reflect the image of the random fruit, which is displayed in the modal.
                     setImageSource(randomFruit.image);
-
                     // Create a shallow copy of the existing inventory.
                     const updatedEggInventory = [...egg_inventory];
-        
                     // Find the first item in the inventory that doesn't have an image and name - effectively an empty slot.
                     const firstEmptySlot = updatedEggInventory.find(item => !item.image && !item.name);
                     
@@ -71,7 +69,6 @@ const TreasureChest = ({ isVisible, onClose }) => { //state being passed in from
                             name: randomFruit.name
                         });
                     }
-        
                     // Dispatch an action to update the global inventory state with the modified inventory.
                     dispatch({ type: 'SET_EGG_INVENTORY', payload: updatedEggInventory });
     

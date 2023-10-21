@@ -73,9 +73,6 @@ const BrownBag = () => {
                     setSelectedPetId(null);
                     setInventory(false);
 
-                    console.log("pet inventory:", pet_inventory)
-                    console.log(selectedPet)
-
                 }
                 
             }
@@ -207,6 +204,24 @@ const BrownBag = () => {
                                 >
                                     <Text style={styles.inventoryButtonText}>Close</Text>
                                 </TouchableOpacity>
+                                <View
+                                    style={styles.timeContainer}
+                                >   
+                                    <View
+                                        style={styles.timeLabel}
+                                    >
+                                        <Text
+                                            style={styles.labelText}
+                                        >
+                                            Total Time:  
+                                        </Text>
+                                    </View>
+                                    <Text
+                                        style={styles.timerText}
+                                    >
+                                        {`${Math.floor(state.totalTime / 60).toString().padStart(2, '0')}:${(state.totalTime % 60).toString().padStart(2, '0')}`}
+                                    </Text>
+                                </View>
                             </View>
                         </View>
                     </View>
@@ -386,9 +401,7 @@ const styles = StyleSheet.create({
         width: 60,
         height: 60,
         //resizeMode: 'cover',
-        
     },
-
     evolutionContainer: {
         justifyContent: 'center',
         alignItems: 'center',
@@ -420,8 +433,53 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         marginBottom: 5, // Add marginBottom to control the distance between the text and the button
       },
-    
+    timerText: {
+    fontSize: 20,
+    marginVertical: 10,
+    borderWidth: 2,
+    backgroundColor: "white",
+    borderRadius: 5,
+    paddingRight: 5,
+    paddingLeft: 5,
+    overflow: 'hidden',
+    marginLeft: 2
+    },
+    timeContainer: {
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "center",
+        alignItems: "center",
+        marginTop: 15,
+        marginLeft: 5,
+
+    },
+    timeLabel: {
+        //fontSize: 17,
+        fontSize: 20,
+        marginVertical: 10,
+        borderWidth: 2,
+        backgroundColor: "white",
+        borderRadius: 5,
+        paddingRight: 0,
+        paddingLeft: 5,
+        overflow: 'hidden',
+        marginLeft: 5,
+        //backgroundColor: '#787878',
+        backgroundColor: '#505050'
+
+    },
+    labelText: {
+        color: 'yellow',
+        //fontSize: 12,
+        fontWeight: 'bold',       // Add a bit of margin to separate it from the bar
+        zIndex: 2,
+        //backgroundColor: '#787878',
+        borderRadius: 10,
+        padding: 3,
   
+
+    }
+    
 });
 
 export default BrownBag;
