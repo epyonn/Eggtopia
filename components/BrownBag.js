@@ -95,7 +95,7 @@ const BrownBag = () => {
                 // Fade in the evolved pet
                 Animated.timing(gifOpacity, {
                     toValue: 1,
-                    duration: 5000,
+                    duration: 2500,
                     useNativeDriver: true
                 }).start(() => {
                     // Once animation is complete, dispatch the evolved pet
@@ -354,7 +354,7 @@ const styles = StyleSheet.create({
         width: 3, 
         height: 3 
     },
-    elevation: 2,
+    elevation: 1,
 },
   selectedItem: {
     borderWidth: 3,
@@ -364,16 +364,18 @@ const styles = StyleSheet.create({
   inventoryButton: {
     backgroundColor: "#2196F3",
     borderRadius: 20,
-    padding: 10,
+    padding: 8,
     elevation: 2,
     marginTop: 15,
     alignSelf: 'center',
-    marginRight: 5
+    marginRight: 5,
+    //borderWidth: 1,
   },
   inventoryButtonText: {
     color: "white",
     fontWeight: "bold",
-    textAlign: "center"
+    textAlign: "center",
+    
   },
   buttonRow: {
     dislay: 'flex',
@@ -465,11 +467,14 @@ const styles = StyleSheet.create({
         overflow: 'hidden',
         marginLeft: 5,
         //backgroundColor: '#787878',
-        backgroundColor: '#505050'
+        //backgroundColor: '#505050'
+        backgroundColor: '#B0B0B0'
+        //backgroundColor: "#2196F3",
 
     },
     labelText: {
         color: 'yellow',
+        //color: 'white',
         //fontSize: 12,
         fontWeight: 'bold',       // Add a bit of margin to separate it from the bar
         zIndex: 2,

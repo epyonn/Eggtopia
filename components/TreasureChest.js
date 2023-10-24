@@ -26,7 +26,11 @@ const TreasureChest = ({ isVisible, onClose }) => { //state being passed in from
         { name: 'pear', image: require('../assets/fruits/pear.png') },
         { name: 'rainbow_pineapple', image: require('../assets/fruits/rainbow_pineapple.png')},
         { name: 'rainbow_pineapple', image: require('../assets/fruits/rainbow_pineapple.png')},
-        { id: genRandomKey(), name: 'dragon_egg', type:'egg', image: require('../assets/dragon/egg/egg-idle.gif'), walking_image: require('../assets/wolf/egg/egg-idle.gif'),
+        { id: genRandomKey(), name: 'dragon_egg', type:'egg', image: require('../assets/dragon/egg/egg-idle.gif'), walking_image: require('../assets/dragon/egg/egg-idle.gif'),
+        expProgress: 0},
+        { id: genRandomKey(), name: 'wolf_egg', type:'egg', image: require('../assets/wolf/egg/egg-idle.gif'), walking_image: require('../assets/wolf/egg/egg-idle.gif'),
+        expProgress: 0},
+        { id: genRandomKey(), name: 'bird_egg', type:'egg', image: require('../assets/bird/egg/egg-idle.gif'), walking_image: require('../assets/bird/egg/egg-idle.gif'),
         expProgress: 0}
     ];
     
@@ -101,7 +105,7 @@ const TreasureChest = ({ isVisible, onClose }) => { //state being passed in from
                     dispatch({ type: 'SET_INVENTORY', payload: updatedInventory });
                 }
 
-            }, 3000); 
+            }, 2000); 
     
             // Clean-up function: This will run when the component is unmounted or if the effect runs again.
             return () => clearTimeout(timer);  // Clear the timer to prevent it from running if the effect is cleaned up.

@@ -137,9 +137,9 @@ const reducer = (state, action) => {
 // Help function to load state from AsyncStorage
 const loadState = async () => {
     try {
-        const serializedState = await AsyncStorage.getItem('appState');
+        //const serializedState = await AsyncStorage.getItem('appState');
         // Reset State 
-        //const serializedState = await AsyncStorage.setItem('appState', JSON.stringify(initialState));
+    const serializedState = await AsyncStorage.setItem('appState', JSON.stringify(initialState));
 
         if (serializedState === null) {
             return undefined;

@@ -338,6 +338,8 @@ brownBag: {
   left: 0,
 },
 monster: {
+  //width: 230,
+  //height: 230,
   width: 230,
   height: 230,
 }
