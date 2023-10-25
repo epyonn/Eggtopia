@@ -1,6 +1,6 @@
 import React, {useState, useContext} from 'react';
 import {AppContext} from '../context/AppContext';
-import {Image, TouchableOpacity, View, StyleSheet, Modal, Text} from 'react-native';
+import {Image, TouchableOpacity, View, StyleSheet, Modal, Text, ScrollView} from 'react-native';
 
 const Incubator = () => {
     // use AppContext to access global state to dispatch the function
@@ -100,6 +100,7 @@ const Incubator = () => {
                 <View style={styles.centeredView}>
                     <View style={styles.modalView}>
                         <View style={styles.eggItems}>
+                            <ScrollView>
                             {chunkArray([...egg_inventory], 4).map((row, rowIndex) => (
                                 <View key={rowIndex} style={styles.inventoryRow}>
                                     {
@@ -126,6 +127,7 @@ const Incubator = () => {
                                     }
                                 </View>
                             ))}
+                            </ScrollView>
 
                             <View style={styles.buttonRow}>
                                 <TouchableOpacity
@@ -171,6 +173,7 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         //backgroundColor: 'black',
         justifyContent: 'space-between',
+        height: 420
     
       },
     centeredView: {

@@ -1,6 +1,6 @@
 import React, {useState, useContext, useEffect} from 'react';
 import { AppContext } from '../context/AppContext';
-import { Image, Modal, StyleSheet, TouchableOpacity, View, Text , Animated} from 'react-native';
+import { Image, Modal, StyleSheet, TouchableOpacity, View, Text , Animated, ScrollView} from 'react-native';
 import Sound from 'react-native-sound';
 import evolutionData from '../context/evolutionData';
 
@@ -20,12 +20,15 @@ const BrownBag = () => {
     const [selectedPetId, setSelectedPetId] = useState(null);
     const [activeTab, setActiveTab] = useState('Fruits');
     const [isEvolutionModalVisible, setEvolutionModalVisible] = useState(false);
+    
+    // Sounds and Exp Gif
     const fruitSound = new Sound(require('../assets/sounds/munching-food.mp3'), (error) => {
         if (error) {
             console.log('failed to load the sound new update 3', error);
             return;
         }
     });
+    const [expGif, setExpGif] = useState(false);
     
 
     // Define a hash map to hold the evolution data
@@ -34,17 +37,23 @@ const BrownBag = () => {
         if (activeTab === 'Fruits') {
             // Filter out the fruit that matches the selected ID.
             const updatedInventory = inventory.filter(item => item.id !== selectedFruitId);
+            
             // Add an empty slot to the inventory to replace the used fruit.
             updatedInventory.push({ id: Math.max(...updatedInventory.map(item => item.id)) + 1 });
 
+            // Added to test for 50 slots
+            /*
+            while(updatedInventory.length < 50) {
+                updatedInventory.push({ id: Math.max(updatedInventory.map(item => item.id)) + 1});
+            }
+            */
             // Dispatch the updated inventory to the global state.
             dispatch({ type: 'SET_INVENTORY', payload: updatedInventory });
             
             // Reset selected fruit states and close the inventory.
             setSelectedFruitId(null);
             setInventory(false);
-            // Dispatch to increment user experience by a given amount.
-            dispatch({ type: 'INCREMENT_EXP', payload: 0.8 });
+
 
             fruitSound.play((success) => {
                 if (success) {
@@ -59,6 +68,18 @@ const BrownBag = () => {
                     console.log('Sound stopped after 1.8 seconds');
                 })
             }, 1800);
+
+            
+            // Dispatch to increment user experience by a given amount.
+            dispatch({ type: 'INCREMENT_EXP', payload: 0.8 });
+
+            setExpGif(true);
+            setTimeout(() => {
+                setExpGif(false);
+            }, 3000)
+
+
+
 
         } else if (activeTab === 'Pets') {
             // Pet that will be added to the main screen based on Id chosen
@@ -103,7 +124,6 @@ const BrownBag = () => {
 
 
     // useEffect for pet evolution
-
     const evolvePet = () => {
         if (selectedPet.expProgress >= 1 && selectedPet.evolution !== 3) {
             const evolvedPet = { ...selectedPet, evolution: selectedPet.evolution + 1, expProgress: 0 };
@@ -148,6 +168,15 @@ const BrownBag = () => {
     // Component JSX rendering logic.
     return (
         <View style={styles.container}>
+            {
+                expGif &&
+                <Image
+
+                source={require('../assets/expBar/plusExpver1.gif')}
+                style={styles.expGif}
+            
+                />
+            }
             <TouchableOpacity onPress={() => setInventory(true)}>
                 <Image source={require('../assets/bag/brownbag7.png')} style={styles.brownBag} />
             </TouchableOpacity>
@@ -174,6 +203,7 @@ const BrownBag = () => {
                     </View>
 
                         <View style={styles.inventoryItems}>
+                            <ScrollView>
                             {chunkArray([...(activeTab === 'Fruits' ? inventory : pet_inventory)], 4).map((row, rowIndex) => ( 
                                 //<View key={rowIndex} style={styles.inventoryRow}> 
                                 <View key={`${activeTab}-${rowIndex}`} style={styles.inventoryRow}>
@@ -211,6 +241,7 @@ const BrownBag = () => {
                                     ))}
                                 </View>
                             ))}
+                            </ScrollView>
                             <View style={styles.buttonRow}>
                                 <TouchableOpacity
                                     style={styles.inventoryButton}
@@ -328,8 +359,8 @@ const styles = StyleSheet.create({
   },
   inventoryItems: {
     flexDirection: 'column',
-    //backgroundColor: 'black',
     justifyContent: 'space-between',
+    height: 430,
 
   },
   inventoryRow: {
@@ -480,7 +511,6 @@ const styles = StyleSheet.create({
 
     },
     timeLabel: {
-        //fontSize: 17,
         fontSize: 20,
         marginVertical: 10,
         borderWidth: 2,
@@ -490,24 +520,25 @@ const styles = StyleSheet.create({
         paddingLeft: 5,
         overflow: 'hidden',
         marginLeft: 5,
-        //backgroundColor: '#787878',
-        //backgroundColor: '#505050'
         backgroundColor: '#B0B0B0',
-        //backgroundColor: "#2196F3",
         justifyContent: 'center',
         alignItems: 'center'
 
     },
     labelText: {
         color: 'yellow',
-        //color: 'white',
-        //fontSize: 12,
         fontWeight: 'bold',       // Add a bit of margin to separate it from the bar
         zIndex: 2,
-        //backgroundColor: '#787878',
         borderRadius: 10,
         padding: 3,
-  
+    },
+    expGif: {
+        width: 200,
+        height: 200,
+        position: "absolute",
+        alignSelf: "center", 
+        transform: [{ translateY: 140}, {translateX: 150}],
+        zIndex: 1000 // Adj
 
     }
     
