@@ -25,7 +25,6 @@ const TreasureChest = ({ isVisible, onClose }) => { //state being passed in from
         { name: 'mangosteen', image: require('../assets/fruits/mangosteen.png') },
         { name: 'pear', image: require('../assets/fruits/pear.png') },
         { name: 'rainbow_pineapple', image: require('../assets/fruits/rainbow_pineapple.png')},
-        { name: 'rainbow_pineapple', image: require('../assets/fruits/rainbow_pineapple.png')},
         { id: genRandomKey(), name: 'dragon_egg', type:'egg', image: require('../assets/dragon/egg/egg-idle.gif'), walking_image: require('../assets/dragon/egg/egg-idle.gif'),
         expProgress: 0},
         { id: genRandomKey(), name: 'wolf_egg', type:'egg', image: require('../assets/wolf/egg/egg-idle.gif'), walking_image: require('../assets/wolf/egg/egg-idle.gif'),

@@ -1,14 +1,19 @@
-import React, {useReducer} from 'react';
+import React, { useEffect } from 'react';
 import { AppProvider } from './context/AppContext';
 import { SafeAreaView, StyleSheet, Text, ImageBackground } from 'react-native';
 import CountdownTimer from './components/CountdownTimer'
 import BrownBag from './components/BrownBag'
 import Incubator from './components/Incubator'
 import { styles } from './styles/styles'
-
+import SplashScreen from 'react-native-splash-screen';
 
 export default function App() {
-
+  
+  useEffect(() => {
+    SplashScreen.hide();
+  }, []);
+  
+  console.log("is this working ")
 
   return (
     <AppProvider>
@@ -20,7 +25,6 @@ export default function App() {
       <Incubator />
       <CountdownTimer />
       </ImageBackground>
-      </AppProvider>
+    </AppProvider>
   );
 };
-

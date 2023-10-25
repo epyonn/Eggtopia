@@ -26,6 +26,12 @@ if linkage != nil
 end
 
 target 'Eggtopia' do
+
+  #Added for react native splash screen 
+  pod 'react-native-splash-screen', :path => '../node_modules/react-native-splash-screen'
+
+
+
   config = use_native_modules!
 
   # Flags change depending on the env values.

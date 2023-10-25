@@ -1,6 +1,7 @@
 import React, {useState, useContext, useEffect} from 'react';
 import { AppContext } from '../context/AppContext';
 import { Image, Modal, StyleSheet, TouchableOpacity, View, Text , Animated} from 'react-native';
+import Sound from 'react-native-sound';
 import evolutionData from '../context/evolutionData';
 
 const BrownBag = () => {
@@ -19,6 +20,13 @@ const BrownBag = () => {
     const [selectedPetId, setSelectedPetId] = useState(null);
     const [activeTab, setActiveTab] = useState('Fruits');
     const [isEvolutionModalVisible, setEvolutionModalVisible] = useState(false);
+    const fruitSound = new Sound(require('../assets/sounds/munching-food.mp3'), (error) => {
+        if (error) {
+            console.log('failed to load the sound new update 3', error);
+            return;
+        }
+    });
+    
 
     // Define a hash map to hold the evolution data
     // Function to use a selected fruit, updating inventory and user experience points.
@@ -37,6 +45,20 @@ const BrownBag = () => {
             setInventory(false);
             // Dispatch to increment user experience by a given amount.
             dispatch({ type: 'INCREMENT_EXP', payload: 0.8 });
+
+            fruitSound.play((success) => {
+                if (success) {
+                    console.log('Sound played successfully');
+                } else {
+                    console.log('Play sound failed');
+                }
+            })
+
+            setTimeout(() => {
+                fruitSound.stop(() => {
+                    console.log('Sound stopped after 1.8 seconds');
+                })
+            }, 1800);
 
         } else if (activeTab === 'Pets') {
             // Pet that will be added to the main screen based on Id chosen
@@ -152,8 +174,9 @@ const BrownBag = () => {
                     </View>
 
                         <View style={styles.inventoryItems}>
-                            {chunkArray([...(activeTab === 'Fruits' ? inventory : pet_inventory)], 4).map((row, rowIndex) => (
-                                <View key={rowIndex} style={styles.inventoryRow}>
+                            {chunkArray([...(activeTab === 'Fruits' ? inventory : pet_inventory)], 4).map((row, rowIndex) => ( 
+                                //<View key={rowIndex} style={styles.inventoryRow}> 
+                                <View key={`${activeTab}-${rowIndex}`} style={styles.inventoryRow}>
                                     {row.map((slot, index) => (
                                         <TouchableOpacity
                                             key={index}
@@ -436,15 +459,16 @@ const styles = StyleSheet.create({
         marginBottom: 5, // Add marginBottom to control the distance between the text and the button
       },
     timerText: {
-    fontSize: 20,
-    marginVertical: 10,
-    borderWidth: 2,
-    backgroundColor: "white",
-    borderRadius: 5,
-    paddingRight: 5,
-    paddingLeft: 5,
-    overflow: 'hidden',
-    marginLeft: 2
+        fontSize: 20,
+        marginVertical: 10,
+        borderWidth: 2,
+        backgroundColor: "white",
+        borderRadius: 5,
+        paddingRight: 5,
+        paddingLeft: 5,
+        overflow: 'hidden',
+        marginLeft: 2,
+
     },
     timeContainer: {
         display: "flex",
@@ -468,8 +492,10 @@ const styles = StyleSheet.create({
         marginLeft: 5,
         //backgroundColor: '#787878',
         //backgroundColor: '#505050'
-        backgroundColor: '#B0B0B0'
+        backgroundColor: '#B0B0B0',
         //backgroundColor: "#2196F3",
+        justifyContent: 'center',
+        alignItems: 'center'
 
     },
     labelText: {

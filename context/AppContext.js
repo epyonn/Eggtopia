@@ -1,6 +1,10 @@
 import React, { createContext, useReducer, useEffect , useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+//Splash Screen
+import SplashScreen from 'react-native-splash-screen'; // Import the splash screen
+
+
 // Creating a new context for our app.
 export const AppContext = createContext();
 
@@ -137,9 +141,9 @@ const reducer = (state, action) => {
 // Help function to load state from AsyncStorage
 const loadState = async () => {
     try {
-        //const serializedState = await AsyncStorage.getItem('appState');
+        const serializedState = await AsyncStorage.getItem('appState');
         // Reset State 
-    const serializedState = await AsyncStorage.setItem('appState', JSON.stringify(initialState));
+        //const serializedState = await AsyncStorage.setItem('appState', JSON.stringify(initialState));
 
         if (serializedState === null) {
             return undefined;
@@ -188,9 +192,27 @@ export const AppProvider = ({ children }) => {
         }
     }, [state]);
 
+    /* Just removed this
     if (!hasLoaded) {  // Don't render children until the state has been loaded from AsyncStorage
         return null;  // Or return a loading component
     }
+    */
+
+    /*
+    if (!hasLoaded) {
+        SplashScreen.show();
+        return null;  // Or you can render a custom loading component here if you prefer
+    } else {
+        SplashScreen.hide();
+        return (
+            <AppContext.Provider value={{ state, dispatch }}>
+                {children}
+            </AppContext.Provider>
+        );
+    }
+
+    */
+
 
     return (
         <AppContext.Provider value={{state, dispatch}}>
