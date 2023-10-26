@@ -14,7 +14,7 @@ const CountdownTimer = ({ initialHours = 0, initialMinutes = 0, initialSeconds =
     // useContext hook to access the global state and dispatch function
     const { state, dispatch } = useContext(AppContext);
     // Constant for experience increment value
-    const expIncrement = 0.05;
+    const expIncrement = 0.02;
     const selected_pet = state.selected_pet[0];
 
     // Check if selected_pet exists before accessing its properties

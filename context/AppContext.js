@@ -15,11 +15,17 @@ const initialState = {
         { id: 1, image: require('../assets/fruits/rainbow_pineapple.png'), name: "rainbow_pineapple" },
         { id: 2, image: require('../assets/fruits/mangosteen.png'), name: 'mangosteen' },
         { id: 3, image: require('../assets/fruits/pear.png'), name: 'pear' },
+        { id: 4},
+
+        // Extra fruits only for debugging.
+        /*
         { id: 4, image: require('../assets/fruits/blue_pineapple.png'), name: 'blue_pineapple' },
         { id: 5, image: require('../assets/fruits/fruit_group.png'), name: 'fruit_group' },
         { id: 6, image: require('../assets/fruits/pear.png'), name: 'pear'  }, 
         { id: 7, image: require('../assets/fruits/water_strawberry.png'), name: 'water_strawberry' }, 
-        { id: 8 }, // Empty slots
+        */
+
+        { id: 5 }, { id: 6}, {id: 7},{ id: 8 }, // Empty slots
         { id: 9 }, { id: 10 }, { id: 11 }, { id: 12 },
         { id: 13 }, { id: 14 }, { id: 15 }, { id: 16 },
         { id: 17 }, { id: 18 }, { id: 19 }, { id: 20 },
@@ -29,6 +35,7 @@ const initialState = {
 
     ],
     egg_inventory: [
+        /* Extra egg for debugging. 
         { 
             id: 109203, 
             type: 'egg',
@@ -49,7 +56,8 @@ const initialState = {
             name: "bird_egg",
             expProgress: 0,
         }, 
-        { id: 3 }, { id: 4 },
+        */
+        {id: 1}, {id: 2},{ id: 3 }, { id: 4 },
         { id: 5 }, { id: 6 }, { id: 7 }, { id: 8 },
         { id: 9 }, { id: 10 }, { id: 11 }, { id: 12 },
         { id: 13 }, { id: 14 }, { id: 15 }, { id: 16 },
@@ -59,6 +67,7 @@ const initialState = {
         { id: 29 }, { id: 30 }, { id: 31 }, { id: 32 },
     ],
     pet_inventory: [
+        /* Extra pets for debugging.
         { 
             id: 98485, 
             type: 'pet',
@@ -88,7 +97,10 @@ const initialState = {
             walking_image: require('../assets/bird/firstEvo/bird-first-walking.gif'),
             name:'bird-first-evo',
             expProgress: 0
-        }, { id: 4 },
+        },
+        */
+
+        { id: 1}, {id: 2}, {id: 3}, { id: 4 },
         { id: 5 }, { id: 6 }, { id: 7 }, { id: 8 }, // Empty slots
         { id: 9 }, { id: 10 }, { id: 11 }, { id: 12 },
         { id: 13 }, { id: 14 }, { id: 15 }, { id: 16 },
@@ -100,6 +112,7 @@ const initialState = {
     ],
     selected_pet:[ 
         {
+            /* Egg original selected pet.
             id: 2930912,
             type: 'egg',
             pet: 'wolf',
@@ -108,6 +121,16 @@ const initialState = {
             walking_image: require('../assets/wolf/egg/egg-idle.gif'),
             name: 'wolf-egg',
             expProgress: 0
+            */
+            id: 2930912,
+            type: 'pet',
+            pet: 'wolf',
+            evolution: 1,
+            image: require('../assets/wolf/firstEvo/wolf-first-idle.gif'),
+            walking_image: require('../assets/wolf/firstEvo/wolf-first-walking.gif'),
+            name: 'wolf',
+            expProgress: 0
+
         }
     ]
 };

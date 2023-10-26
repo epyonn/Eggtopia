@@ -71,7 +71,8 @@ const BrownBag = () => {
 
             
             // Dispatch to increment user experience by a given amount.
-            dispatch({ type: 'INCREMENT_EXP', payload: 0.8 });
+            // Original payload 0.8 for debugging.
+            dispatch({ type: 'INCREMENT_EXP', payload: 0.02 });
 
             setExpGif(true);
             setTimeout(() => {
