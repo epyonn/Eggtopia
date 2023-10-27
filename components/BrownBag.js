@@ -38,7 +38,7 @@ const BrownBag = () => {
                     // Dispatch to increment user experience by a given amount.
                     // Original payload 0.8 for debugging.
                     //dispatch({ type: 'INCREMENT_EXP', payload: 0.02 });
-                    dispatch({ type: 'INCREMENT_EXP', payload: 0.04 });
+                    dispatch({ type: 'INCREMENT_EXP', payload: 0.8 });
                     fruitSound.play((success) => {
                         if (success) {
                             console.log('Sound played successfully');
