@@ -6,12 +6,9 @@ const Incubator = () => {
     // use AppContext to access global state to dispatch the function
     const {state, dispatch} = useContext(AppContext);
     const egg_inventory = state.egg_inventory;
-
     const inventory = state.inventory;
     const pet_inventory = state.pet_inventory;
     const selectedPet = state.selected_pet[0];
-
-    // Inventory Open
     const [isIncubatorOpen, setIncubator] = useState(false);
     const [selectedEggId, setSelectedEggId] = useState(null);
 
@@ -25,72 +22,46 @@ const Incubator = () => {
     }
 
     const useItem = () => {
-
             // Pet that will be added to the main screen based on Id chosen
             const selectedPetData = egg_inventory.find(egg => egg.id === selectedEggId)
-
             if(selectedPetData.type === "egg" && selectedPet.type === 'pet') {
-                // selectedPet is the egg that is active
-                //const currentEgg = selectedPet;
-                
+                // selectedPet is the egg that is active            
                 // Remove the selected egg from egg_inventory
                 const updatedEggInventory = egg_inventory.filter(egg => egg.id !== selectedEggId)
                 updatedEggInventory.push({id: Math.max(...updatedEggInventory.map(item => item.id)) + 1});
-
-
-
                 const updatedPetInventory = [...pet_inventory];
                 const emptySlotIndex = pet_inventory.findIndex(pet => !pet.name);
                 updatedPetInventory[emptySlotIndex] = selectedPet;
- 
-                // Create a copy of the pet_inventory with the selected pet removed.
-               // const emptySlotIndex = egg_inventory.findIndex(pet => !pet.name)
-                //updatedEggInventory[emptySlotIndex] = currentEgg;
-
                 dispatch({ type:'SELECT_PET', payload: selectedPetData });
-
                 // Set Egg Inventory  
                 dispatch({ type:'SET_EGG_INVENTORY', payload: updatedEggInventory });
-
                 dispatch({ type: 'SET_PET_INVENTORY', payload: updatedPetInventory});
-
-                console.log("pet inventory after egg use ", pet_inventory)
-                console.log("egg_inventory after clicking select: ", egg_inventory)
-
-
             }
 
             if (selectedPet.type === "egg" && selectedPetData.type === "egg")
             {
                 const currentPet = selectedPet;
-
                 const updatedEggInventory = egg_inventory.filter(egg => egg.id !== selectedEggId)
                 updatedEggInventory.push({id: Math.max(...updatedEggInventory.map(item => item.id)) + 1});
-
-
                 const emptySlotIndex = egg_inventory.findIndex(egg => !egg.name)
                 updatedEggInventory[emptySlotIndex] = currentPet;
                 dispatch({ type:'SELECT_PET', payload: selectedPetData });
                 dispatch({ type: 'SET_EGG_INVENTORY', payload: updatedEggInventory})
             }
-
             setSelectedEggId(null);
             setIncubator(false);
     };
-
     return (
         <View style={styles.container}>
             <TouchableOpacity
                 onPress={() => setIncubator(true)}
             >
                 <Image
-                    
                     source={require('../assets/incubator/egg_incubator.png')}
                     style={styles.incubator} 
                 
                 />
             </TouchableOpacity>
-            
             <Modal
                 animationType="slide"
                 transparent={true}
@@ -110,7 +81,6 @@ const Incubator = () => {
                                                 style={[
                                                     styles.inventoryEgg,
                                                     selectedEggId === slot.id && styles.selectedEgg
-
                                                 ]}
                                                 onPress={() => {
                                                     if (slot.name) {
@@ -121,14 +91,12 @@ const Incubator = () => {
                                                 }}
                                             >
                                                 {slot.image && <Image source={slot.image} style={styles.eggImage} />}
-
                                             </TouchableOpacity>
                                         ))
                                     }
                                 </View>
                             ))}
                             </ScrollView>
-
                             <View style={styles.buttonRow}>
                                 <TouchableOpacity
                                     style={styles.eggButton}
@@ -161,7 +129,6 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: 40,
         right: 0,
-
     },
     incubator: {
         display: 'flex',
@@ -254,11 +221,7 @@ const styles = StyleSheet.create({
       eggImage: {
         width: 60,
         height: 60,
-        //resizeMode: 'cover',
-        
     },
-
-
 })
 
 

@@ -1,22 +1,15 @@
-// Import necessary hooks and functions from React library
 import React, { useState, useEffect, useContext, useRef } from 'react';
-// Import the application context
 import { AppContext } from '../context/AppContext';
-// Import necessary components and styling from React Native
 import { View, Text, TouchableOpacity, StyleSheet, Image, Modal } from 'react-native';
-// Import the Picker component for user input on time
 import { Picker } from '@react-native-picker/picker';
-// Import the TreasureChest component
 import TreasureChest from './TreasureChest';
 
-// Define the CountdownTimer component, with default props for hours, minutes, and seconds
 const CountdownTimer = ({ initialHours = 0, initialMinutes = 0, initialSeconds = 0 }) => {
     // useContext hook to access the global state and dispatch function
     const { state, dispatch } = useContext(AppContext);
     // Constant for experience increment value
-    const expIncrement = 0.02;
+    const expIncrement = 0.03;
     const selected_pet = state.selected_pet[0];
-
     // Check if selected_pet exists before accessing its properties
     const idleImage = selected_pet ? selected_pet.image : null;
     const walkingImage = selected_pet ? selected_pet.walking_image : null;
@@ -30,8 +23,7 @@ const CountdownTimer = ({ initialHours = 0, initialMinutes = 0, initialSeconds =
     // useState hook to control the visibility of the treasure chest
     const [showTreasureChest, setShowTreasureChest] = useState(false);
 
-    // Temp time for pickers
-
+    // Temp time for pickers.
     const [tempHours, setTempHours] = useState(hours);
     const [tempMinutes, setTempMinutes] = useState(minutes);
 
@@ -46,9 +38,6 @@ const CountdownTimer = ({ initialHours = 0, initialMinutes = 0, initialSeconds =
 
     // New state to check if the timer is manually finished
     const [isManuallyFinished, setIsManuallyFinished] = useState(false);
-
-
-    // Total Time
     const [startHours, setStartHours] = useState(initialHours);
     const [startMinutes, setStartMinutes] = useState(initialMinutes);
     const [totalTime, setTotalTime] = useState(0);
@@ -61,27 +50,13 @@ const CountdownTimer = ({ initialHours = 0, initialMinutes = 0, initialSeconds =
         setSeconds(0);
     };
 
-    // Array of wolf GIFs
+    // Array of wolf gifs. Eventually implement animation variety.
     const wolfGifs = [
-      /*
-        require('../assets/wolf_running.gif'),
-        require('../assets/wolf_slash.gif'),
-        require('../assets/wolf_idle.gif'),
-        require('../assets/wolf_fire.gif')
-      */
-        /*
-        require('../assets/wol
-        f/wolf_running.gif'),
-        require('../assets/wolf/wolf_slash.gif'),
-        require('../assets/wolf/wolf_idle.gif'),
-        require('../assets/wolf/wolf_fire.gif')
-        */
-
-        //require('../assets/wolf/firstEvo/wolf-first-walking.gif')
         selected_pet.walking_image
     ];
 
     // useEffect hook to change the gif every 1.5 seconds
+    // Eventual implementation of more animation variety. Need more assets.
     useEffect(() => {
         const gifInterval = setInterval(() => {
             if (isTimerRunning.current) {
@@ -89,7 +64,6 @@ const CountdownTimer = ({ initialHours = 0, initialMinutes = 0, initialSeconds =
                 setCurrentGif(randomGif);
             }
         }, 1500);
-
         return () => clearInterval(gifInterval);  // Cleanup function to clear the interval when unmounting
     }, []);
 
@@ -102,20 +76,15 @@ const CountdownTimer = ({ initialHours = 0, initialMinutes = 0, initialSeconds =
                     if (hours === 0) {
                         // Logic to handle what happens when the timer reaches zero
                         if (!wasReset.current && !isManuallyFinished) {
-
                             dispatch({
                                 type: 'INCREMENT_EXP',
                                 payload: Math.min(state.expProgress + expIncrement, 1)
                             });
+                            dispatch({ type: "SET_INVENTORY_OPEN", payload: false})
                             setShowTreasureChest(true);
-
                             const totalTimeInMinutes = (startHours * 60) + startMinutes;
                             let updatedTotalMinutes = state.totalTime + totalTimeInMinutes;
                             dispatch({ type:'SET_TOTAL_TIME', payload: updatedTotalMinutes})
-                            console.log("total time " + state.totalTime)
-                            
-                            //setTotalTime(prevTime => prevTime + totalTimeInMinutes);
-
                         }
                         setIsManuallyFinished(false); // Reset the manual finish flag
                         clearInterval(myInterval);  // Stop the timer
@@ -132,10 +101,8 @@ const CountdownTimer = ({ initialHours = 0, initialMinutes = 0, initialSeconds =
                 setSeconds(seconds - 1);  // Decrement the seconds
             }
         }, 1000);
-
         return () => clearInterval(myInterval);  // Cleanup function to clear the interval when unmounting or state changes
     }, [hours, minutes, seconds]);
-
 
     return (
         <View style={styles.container}>
@@ -150,31 +117,29 @@ const CountdownTimer = ({ initialHours = 0, initialMinutes = 0, initialSeconds =
         <View style={styles.expBarContainer}>
           <View style={[styles.expBarProgress, { width: `${selected_pet.expProgress * 100}%`}]} />
         </View>
-      </View>
-      { hours === 0 && minutes === 0 && seconds === 0 ? (
-        <Image
-          source={selected_pet.image}
-          style={styles.monster}
-
-      />) : (
-        <Image
-          source={selected_pet.walking_image}
-          style={styles.monster}
-        />
-      )
-      }
-      <TouchableOpacity onPress={() => setPickerVisibility(true)}>
-        <Text style={styles.timerText}>
-          {hours}:{minutes < 10 ? `0${minutes}` : minutes}:{seconds < 10 ? `0${seconds}` : seconds}
-        </Text>
-      </TouchableOpacity>
-
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={isPickerVisible}
-        onRequestClose={() => setPickerVisibility(false)}
-      >
+        </View>
+        { hours === 0 && minutes === 0 && seconds === 0 ? (
+          <Image
+            source={selected_pet.image}
+            style={styles.monster}
+          />) : (
+          <Image
+            source={selected_pet.walking_image}
+            style={styles.monster}
+          />
+          )
+        }
+        <TouchableOpacity onPress={() => setPickerVisibility(true)}>
+          <Text style={styles.timerText}>
+            {hours}:{minutes < 10 ? `0${minutes}` : minutes}:{seconds < 10 ? `0${seconds}` : seconds}
+          </Text>
+        </TouchableOpacity>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={isPickerVisible}
+          onRequestClose={() => setPickerVisibility(false)}
+        >
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <View style={styles.pickerContainer}>
@@ -198,32 +163,26 @@ const CountdownTimer = ({ initialHours = 0, initialMinutes = 0, initialSeconds =
                 ))}
               </Picker>
             </View>
-
             <TouchableOpacity onPress={() => {
               setHours(tempHours);
               setMinutes(tempMinutes);
               setSeconds(0);
-
               // Total Time
               setStartHours(tempHours);  // Update starting hours
               setStartMinutes(tempMinutes);  
-
               setPickerVisibility(false)
-
             }}
             style={styles.resetButton}
             >
               <Text>Done</Text>
             </TouchableOpacity>
-
           </View>
         </View>
       </Modal>
-
       <TouchableOpacity onPress={resetTimer} style={styles.resetButton}>
         <Text style={styles.buttonText}> Reset </Text>
       </TouchableOpacity>
-        </View>
+      </View>
     );
 };
 
@@ -234,9 +193,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-
   },
-
   // Text style for the timer display
   timerText: {
     fontSize: 35,
@@ -289,7 +246,7 @@ const styles = StyleSheet.create({
   resetButton: {
     marginTop: 10,
     paddingVertical: 10,
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
     borderWidth: 3,
     borderColor: 'black',
     borderRadius: 10,
@@ -305,46 +262,41 @@ const styles = StyleSheet.create({
     marginTop: 20,
     overflow: 'hidden',
     borderWidth: 2,
-},
-expBarProgress: {
+  },
+  expBarProgress: {
     height: '100%',
     backgroundColor: '#4CAF50',
-},
-expBarLabelContainer: {
+  },
+  expBarLabelContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     width: '60%',
     height: 30,
     marginTop: 20,
-},
-expText: {
+  },
+  expText: {
     color: 'yellow',
     fontSize: 12,
     fontWeight: 'bold',       // Add a bit of margin to separate it from the bar
     zIndex: 2,
     backgroundColor: 'black',
     borderRadius: 10,
-
-},
-textContainer: {
+  },
+  textContainer: {
     // Any additional styles can go here
     backgroundColor: 'white'
-},
-brownBag: {
-  width: 100,
-  height: 100,
-  position: 'absolute',
-  top: 0,
-  left: 0,
-},
-monster: {
-  //width: 230,
-  //height: 230,
-  width: 230,
-  height: 230,
-}
-
+  },
+  brownBag: {
+    width: 100,
+    height: 100,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    },
+  monster: {
+    width: 230,
+    height: 230,
+  }
 });
 
-// Export the CountdownTimer component
 export default CountdownTimer;

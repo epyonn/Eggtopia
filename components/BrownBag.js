@@ -12,9 +12,9 @@ const BrownBag = () => {
     const selectedPet = state.selected_pet[0];
     const egg_inventory = state.egg_inventory;
     const gifOpacity = useState(new Animated.Value(0))[0];
+    const isInventoryOpen = state.isInventoryOpen;
 
     // Define local component states for inventory modal visibility and selected fruit properties.
-    const [isInventoryOpen, setInventory] = useState(false);
     const [selectedFruit, setSelectedFruit] = useState(null);
     const [selectedFruitId, setSelectedFruitId] = useState(null);
     const [selectedPetId, setSelectedPetId] = useState(null);
@@ -24,117 +24,87 @@ const BrownBag = () => {
     // Sounds and Exp Gif
     const fruitSound = new Sound(require('../assets/sounds/munching-food.mp3'), (error) => {
         if (error) {
-            console.log('failed to load the sound new update 3', error);
+            console.log('failed to load the sound new update', error);
             return;
         }
     });
     const [expGif, setExpGif] = useState(false);
     
-
-    // Define a hash map to hold the evolution data
     // Function to use a selected fruit, updating inventory and user experience points.
     const useItem = () => {
         if (activeTab === 'Fruits') {
-            // Filter out the fruit that matches the selected ID.
-            const updatedInventory = inventory.filter(item => item.id !== selectedFruitId);
-            
-            // Add an empty slot to the inventory to replace the used fruit.
-            updatedInventory.push({ id: Math.max(...updatedInventory.map(item => item.id)) + 1 });
-
-            // Added to test for 50 slots
-            /*
-            while(updatedInventory.length < 50) {
-                updatedInventory.push({ id: Math.max(updatedInventory.map(item => item.id)) + 1});
-            }
-            */
-            // Dispatch the updated inventory to the global state.
-            dispatch({ type: 'SET_INVENTORY', payload: updatedInventory });
-            
-            // Reset selected fruit states and close the inventory.
-            setSelectedFruitId(null);
-            setInventory(false);
-
-
-            fruitSound.play((success) => {
-                if (success) {
-                    console.log('Sound played successfully');
-                } else {
-                    console.log('Play sound failed');
+            const updatedInventory = inventory.map(item => {
+                if (item.id === selectedFruitId && item.name) {
+                    // Dispatch to increment user experience by a given amount.
+                    // Original payload 0.8 for debugging.
+                    //dispatch({ type: 'INCREMENT_EXP', payload: 0.02 });
+                    dispatch({ type: 'INCREMENT_EXP', payload: 0.04 });
+                    fruitSound.play((success) => {
+                        if (success) {
+                            console.log('Sound played successfully');
+                        } else {
+                            console.log('Play sound failed');
+                        }
+                    })
+                    setTimeout(() => {
+                        fruitSound.stop(() => {
+                            console.log('Sound stopped after 1.8 seconds');
+                        })
+                    }, 1800);
+                    setExpGif(true);
+                    setTimeout(() => {
+                        setExpGif(false);
+                    }, 3000)
+                    return { id: selectedFruitId };
                 }
-            })
-
-            setTimeout(() => {
-                fruitSound.stop(() => {
-                    console.log('Sound stopped after 1.8 seconds');
-                })
-            }, 1800);
-
-            
-            // Dispatch to increment user experience by a given amount.
-            // Original payload 0.8 for debugging.
-            dispatch({ type: 'INCREMENT_EXP', payload: 0.02 });
-
-            setExpGif(true);
-            setTimeout(() => {
-                setExpGif(false);
-            }, 3000)
-
-
-
-
+                return item;  // returning the item unchanged if the condition isn't met
+            });
+            dispatch({ type: 'SET_INVENTORY', payload: updatedInventory}) 
+            // Reset selected fruit states and close the inventory
+            setSelectedFruitId(null);
+            setSelectedPetId(null);
+            // Close inventory
+            dispatch({ type: 'SET_INVENTORY_OPEN', payload: false});
+            //setInventory(false);
         } else if (activeTab === 'Pets') {
+            setSelectedFruitId(null);
             // Pet that will be added to the main screen based on Id chosen
             const selectedPetData = pet_inventory.find(pet => pet.id === selectedPetId)
-
             if(selectedPetData) {
                 if(selectedPet.type === "egg") {
                     // Put egg back into inventory
                     const updatedEggInventory = [...egg_inventory];
                     const emptySlotIndex = egg_inventory.findIndex(egg => !egg.name);
                     updatedEggInventory[emptySlotIndex] = selectedPet;
-
                     dispatch({type: "SET_EGG_INVENTORY", payload: updatedEggInventory});
-
                     dispatch({type:'SELECT_PET', payload: selectedPetData});
-
                     const updatedPetInventory = pet_inventory.filter(pet => pet.id !== selectedPetId);
-                    
                     updatedPetInventory.push({id: Math.max(...updatedPetInventory.map(item => item.id)) + 1});
-
                     dispatch({ type: 'SET_PET_INVENTORY', payload: updatedPetInventory })
-
                     setSelectedPetId(null);
-                    setInventory(false);
-
+                    // Use dispatch instead of setter functions.
+                    dispatch({type: 'SET_INVENTORY_OPEN', payload: false});
                 } else {
                     // Create a copy of the pet_inventory with the selected pet removed.
                     const updatedPetInventory = pet_inventory.filter(pet => pet.id !== selectedPetId);
-
                     updatedPetInventory.unshift(selectedPet);
                     dispatch({ type: 'SET_PET_INVENTORY', payload: updatedPetInventory });
-
                     dispatch({ type:'SELECT_PET', payload: selectedPetData });
                     setSelectedPetId(null);
-                    setInventory(false);
-
+                    // Use dispatch instead of setting functions
+                    dispatch({ type: 'SET_INVENTORY_OPEN', payload: false});
                 }
-                
             }
         }  
     };
-
-
     // useEffect for pet evolution
     const evolvePet = () => {
         if (selectedPet.expProgress >= 1 && selectedPet.evolution !== 3) {
             const evolvedPet = { ...selectedPet, evolution: selectedPet.evolution + 1, expProgress: 0 };
-
             const petTypeMap = evolutionData.get(selectedPet.pet);
             const petEvolutionData = petTypeMap && petTypeMap.get(evolvedPet.evolution);
-
             if (petEvolutionData) {
                 Object.assign(evolvedPet, petEvolutionData);
-
                 // Fade in the evolved pet
                 Animated.timing(gifOpacity, {
                     toValue: 1,
@@ -147,16 +117,13 @@ const BrownBag = () => {
                     gifOpacity.setValue(0);
                 });
             }
-
             setEvolutionModalVisible(true);
         }
     };
-
     // Use useEffect to call evolvePet whenever selectedPet.expProgress changes
     useEffect(() => {
         evolvePet();
     }, [selectedPet.expProgress]);
-
     // Utility function to chunk an array into smaller arrays of specified size.
     const chunkArray = (array, chunkSize) => {
         const results = [];
@@ -165,31 +132,27 @@ const BrownBag = () => {
         }
         return results;
     };
-
     // Component JSX rendering logic.
     return (
         <View style={styles.container}>
             {
                 expGif &&
                 <Image
-
                 source={require('../assets/expBar/plusExpver1.gif')}
                 style={styles.expGif}
-            
                 />
             }
-            <TouchableOpacity onPress={() => setInventory(true)}>
+            <TouchableOpacity onPress={() => dispatch({ type: 'SET_INVENTORY_OPEN', payload: true}, console.log('pressed' + isInventoryOpen)) /*setInventory(true)*/}>
                 <Image source={require('../assets/bag/brownbag7.png')} style={styles.brownBag} />
             </TouchableOpacity>
             <Modal
                 animationType='slide'
                 transparent={true}
                 visible={isInventoryOpen}
-                onRequestClose={() => setInventory(false)}
+                onRequestClose={() => dispatch({ type: 'SET_INVENTORY_OPEN', payload: false})}
             >
                 <View style={styles.centeredView}>
                     <View style={styles.modalView}>
-
                     <View style={styles.tabs}>
                         <TouchableOpacity 
                             style={[styles.tab, activeTab === 'Fruits' && styles.activeTab]}
@@ -201,84 +164,78 @@ const BrownBag = () => {
                             onPress={() => setActiveTab('Pets')}>
                             <Text> Pets </Text>
                         </TouchableOpacity>
-                    </View>
-
-                        <View style={styles.inventoryItems}>
-                            <ScrollView>
-                            {chunkArray([...(activeTab === 'Fruits' ? inventory : pet_inventory)], 4).map((row, rowIndex) => ( 
-                                //<View key={rowIndex} style={styles.inventoryRow}> 
-                                <View key={`${activeTab}-${rowIndex}`} style={styles.inventoryRow}>
-                                    {row.map((slot, index) => (
-                                        <TouchableOpacity
-                                            key={index}
-                                            style={[
-                                                styles.inventoryFruit,
-                                                selectedFruitId === slot.id && styles.selectedItem ||
-                                                selectedPetId === slot.id
-                                                
-                                                &&
-                    
-                                                styles.selectedItem
-                                            ]}
-                                            onPress={() => {
-                                                if (slot.name) {
-                                                    if (activeTab === 'Fruits') {
-                                                        setSelectedFruitId(slot.id);
-                                                    } 
-                                                    if (activeTab === 'Pets') {
-                                                        setSelectedPetId(slot.id)
-                                                    }
-                                                    
-                                                } else {
-                                                    setSelectedFruitId(null);
-                                                    setSelectedPetId(null)
+                </View>
+                    <View style={styles.inventoryItems}>
+                        <ScrollView>
+                        {chunkArray([...(activeTab === 'Fruits' ? inventory : pet_inventory)], 4).map((row, rowIndex) => ( 
+                            //<View key={rowIndex} style={styles.inventoryRow}> 
+                            <View key={`${activeTab}-${rowIndex}`} style={styles.inventoryRow}>
+                                {row.map((slot, index) => (
+                                    <TouchableOpacity
+                                        key={index}
+                                        style={[
+                                            styles.inventoryFruit,
+                                            selectedFruitId === slot.id && styles.selectedItem || selectedPetId === slot.id && styles.selectedItem
+                                        ]}
+                                        onPress={() => {
+                                            if (slot.name) {
+                                                if (activeTab === 'Fruits') {
+                                                    setSelectedFruitId(slot.id);
+                                                } 
+                                                if (activeTab === 'Pets') {
+                                                    setSelectedPetId(slot.id)
                                                 }
-                                            }}>
-                                            <View style={styles.innerShadow}>
-                                                {slot.image && <Image source={slot.image} style={styles.inventoryImage}/>}
-
-                                            </View>
-                                        </TouchableOpacity>
-                                    ))}
-                                </View>
-                            ))}
-                            </ScrollView>
-                            <View style={styles.buttonRow}>
-                                <TouchableOpacity
-                                    style={styles.inventoryButton}
-                                    onPress={useItem}
-                                >
-                                    <Text style={styles.inventoryButtonText}> Use </Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity
-                                    style={styles.inventoryButton}
-                                    onPress={() => {
-                                        setInventory(false);
-                                        setSelectedFruit(null);
-                                    }}
-                                >
-                                    <Text style={styles.inventoryButtonText}>Close</Text>
-                                </TouchableOpacity>
+                                                
+                                            } else {
+                                                setSelectedFruitId(null);
+                                                setSelectedPetId(null)
+                                            }
+                                        }}>
+                                        <View style={styles.innerShadow}>
+                                            {slot.image && <Image source={slot.image} style={styles.inventoryImage}/>}
+                                        </View>
+                                    </TouchableOpacity>
+                                ))}
+                            </View>
+                        ))}
+                        </ScrollView>
+                        <View style={styles.buttonRow}>
+                            <TouchableOpacity
+                                style={styles.inventoryButton}
+                                onPress={useItem}
+                            >
+                                <Text style={styles.inventoryButtonText}> Use </Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                style={styles.inventoryButton}
+                                onPress={() => {    
+                                    setSelectedFruit(null);
+                                    setSelectedPetId(null);
+                                    dispatch({ type: 'SET_INVENTORY_OPEN', payload: false});
+                                }}
+                            >
+                                <Text style={styles.inventoryButtonText}>Close</Text>
+                            </TouchableOpacity>
+                            <View
+                                style={styles.timeContainer}
+                            >   
                                 <View
-                                    style={styles.timeContainer}
-                                >   
-                                    <View
-                                        style={styles.timeLabel}
-                                    >
-                                        <Text
-                                            style={styles.labelText}
-                                        >
-                                            Total Time:  
-                                        </Text>
-                                    </View>
+                                    style={styles.timeLabel}
+                                >
                                     <Text
-                                        style={styles.timerText}
+                                        style={styles.labelText}
                                     >
-                                        {`${Math.floor(state.totalTime / 60).toString().padStart(2, '0')}:${(state.totalTime % 60).toString().padStart(2, '0')}`}
+                                        Total Time:  
                                     </Text>
                                 </View>
+                                <Text
+                                    style={styles.timerText}
+                                >
+                                    {`${Math.floor(state.totalTime / 60).toString().padStart(2, '0')}:${(state.totalTime % 60).toString().padStart(2, '0')}`}
+                                </Text>
                             </View>
                         </View>
+                    </View>
                     </View>
                 </View>
             </Modal>
@@ -290,14 +247,11 @@ const BrownBag = () => {
             >
             <View style={styles.centeredView}>
                 <View style={styles.modalView}>
-                    {/* Container for images and evolution text */}
                     <View style={styles.evolutionContainer}>
-                        {/* Original Pet Image with inverse opacity */}
                         <Animated.Image 
                             source={selectedPet.image} 
                             style={[styles.evolutionImage, {opacity: Animated.subtract(1, gifOpacity)}]}
                         />
-                        {/* Evolved Pet Image */}
                         <Animated.Image 
                             source={evolutionData.get(selectedPet.pet)?.get(selectedPet.evolution + 1)?.image || selectedPet.image} 
                             style={[styles.evolutionImage, {opacity: gifOpacity}]}
@@ -388,7 +342,6 @@ const styles = StyleSheet.create({
     },
     elevation: 2,
   },
-
   inventorySlot: {
     width: 50,
     height: 50,
@@ -410,7 +363,7 @@ const styles = StyleSheet.create({
         height: 3 
     },
     elevation: 1,
-},
+  },
   selectedItem: {
     borderWidth: 3,
     borderRadius: 10,
@@ -443,106 +396,98 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 15,
-    },
-    tab: {
-        flex: 1,
-        alignItems: 'center',
-        padding: 10,
-        borderBottomWidth: 2,
-        borderBottomColor: 'transparent',
-    },
-    activeTab: {
-        borderBottomColor: '#2196F3',
-    },
-    inventoryImage: {
-        width: 60,
-        height: 60,
-        //resizeMode: 'cover',
-    },
-    evolutionContainer: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginBottom: 20, // or adjust this value to get desired spacing
-        maxHeight: '90%',
-        maxHeight: '80%',
-        padding: 20
-    },
-    
-    evolutionImage: {
-        width: 200,
-        height: 200,
-        position: 'absolute',
-        resizeMode: 'cover' // make sure the image covers the given width and height without distortion
-    },
-    
-    evolutionText: {
-        marginTop: 230, // this value should be slightly more than the height of the images to position the text underneath them
-        fontSize: 16, // adjust as per your requirement
-        //fontWeight: 'bold',
-        textAlign: 'center'
-    },
-    evolutionButton: {
-        backgroundColor: "#2196F3",
-        borderRadius: 20,
-        padding: 10,
-        elevation: 2,
-        marginTop: 15,
-        alignSelf: 'center',
-        marginBottom: 5, // Add marginBottom to control the distance between the text and the button
-      },
-    timerText: {
-        fontSize: 20,
-        marginVertical: 10,
-        borderWidth: 2,
-        backgroundColor: "white",
-        borderRadius: 5,
-        paddingRight: 5,
-        paddingLeft: 5,
-        overflow: 'hidden',
-        marginLeft: 2,
-
-    },
-    timeContainer: {
-        display: "flex",
-        flexDirection: "row",
-        justifyContent: "center",
-        alignItems: "center",
-        marginTop: 15,
-        marginLeft: 5,
-
-    },
-    timeLabel: {
-        fontSize: 20,
-        marginVertical: 10,
-        borderWidth: 2,
-        backgroundColor: "white",
-        borderRadius: 5,
-        paddingRight: 0,
-        paddingLeft: 5,
-        overflow: 'hidden',
-        marginLeft: 5,
-        backgroundColor: '#B0B0B0',
-        justifyContent: 'center',
-        alignItems: 'center'
-
-    },
-    labelText: {
-        color: 'yellow',
-        fontWeight: 'bold',       // Add a bit of margin to separate it from the bar
-        zIndex: 2,
-        borderRadius: 10,
-        padding: 3,
-    },
-    expGif: {
-        width: 200,
-        height: 200,
-        position: "absolute",
-        alignSelf: "center", 
-        transform: [{ translateY: 140}, {translateX: 150}],
-        zIndex: 1000 // Adj
-
-    }
-    
+  },
+  tab: {
+    flex: 1,
+    alignItems: 'center',
+    padding: 10,
+    borderBottomWidth: 2,
+    borderBottomColor: 'transparent',
+  },
+  activeTab: {
+    borderBottomColor: '#2196F3',
+  },
+  inventoryImage: {
+    width: 60,
+    height: 60,
+  },
+  evolutionContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 20, // or adjust this value to get desired spacing
+    maxHeight: '90%',
+    maxHeight: '80%',
+    padding: 20
+  },  
+  evolutionImage: {
+    width: 200,
+    height: 200,
+    position: 'absolute',
+    resizeMode: 'cover' // make sure the image covers the given width and height without distortion
+  },
+  evolutionText: {
+    marginTop: 230, // this value should be slightly more than the height of the images to position the text underneath them
+    fontSize: 16, // adjust as per your requirement
+    //fontWeight: 'bold',
+    textAlign: 'center'
+  },
+  evolutionButton: {
+    backgroundColor: "#2196F3",
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+    marginTop: 15,
+    alignSelf: 'center',
+    marginBottom: 5, // Add marginBottom to control the distance between the text and the button
+  },
+  timerText: {
+    fontSize: 20,
+    marginVertical: 10,
+    borderWidth: 2,
+    backgroundColor: "white",
+    borderRadius: 5,
+    paddingRight: 5,
+    paddingLeft: 5,
+    overflow: 'hidden',
+    marginLeft: 2,
+  },
+  timeContainer: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 15,
+    marginLeft: 5,
+  },
+  timeLabel: {
+    fontSize: 20,
+    marginVertical: 10,
+    borderWidth: 2,
+    backgroundColor: "white",
+    borderRadius: 5,
+    paddingRight: 0,
+    paddingLeft: 5,
+    overflow: 'hidden',
+    marginLeft: 5,
+    backgroundColor: '#B0B0B0',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  labelText: {
+    color: 'yellow',
+    fontWeight: 'bold',      
+    zIndex: 2,
+    borderRadius: 10,
+    padding: 3,
+  },
+  expGif: {
+    width: 200,
+    height: 200,
+    position: "absolute",
+    alignSelf: "center", 
+    transform: [{ translateY: 140}, {translateX: 150}],
+    zIndex: 1000 // Adj
+  }
 });
 
 export default BrownBag;

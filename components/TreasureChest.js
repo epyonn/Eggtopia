@@ -2,9 +2,8 @@ import React, {useState, useEffect, useContext} from 'react';
 import { AppContext } from '../context/AppContext'
 import {Modal, View, Image, StyleSheet, TouchableOpacity, Text} from 'react-native';
 
-const TreasureChest = ({ isVisible, onClose }) => { //state being passed in from parent component
+const TreasureChest = ({ isVisible, onClose }) => { //State being passed in from parent component.
     const [imageSource, setImageSource] = useState(require('../assets/treasureChest/treasure_chest.gif'));
-
     const {state, dispatch} = useContext(AppContext);
     const inventory = state.inventory;
     const egg_inventory = state.egg_inventory;
@@ -15,9 +14,15 @@ const TreasureChest = ({ isVisible, onClose }) => { //state being passed in from
         return randomKey;
     }
 
-    // array of fruit images
+    const getRandomFruit = () => {
+        const randomIndex = Math.floor(Math.random() * rewards.length);
+        console.log("this is the random index" + randomIndex);
+        return rewards[randomIndex];
+    };
+
+    // Array of fruit images.
     const rewards = [
-        { name: 'blue_pineapple', image: require('../assets/fruits/blue_pineapple.png') },
+        { name: 'blue_pineapple', image: require('../assets/fruits/blue_pineapple.png')}, 
         { name: 'fire_peach', image: require('../assets/fruits/fire_peach.png') },
         { name: 'fruit_group', image: require('../assets/fruits/fruit_group.png') },
         { name: 'ice_pineapple', image: require('../assets/fruits/ice_pineapple.png') },
@@ -25,18 +30,31 @@ const TreasureChest = ({ isVisible, onClose }) => { //state being passed in from
         { name: 'mangosteen', image: require('../assets/fruits/mangosteen.png') },
         { name: 'pear', image: require('../assets/fruits/pear.png') },
         { name: 'rainbow_pineapple', image: require('../assets/fruits/rainbow_pineapple.png')},
-        { id: genRandomKey(), name: 'dragon_egg', type:'egg', image: require('../assets/dragon/egg/egg-idle.gif'), walking_image: require('../assets/dragon/egg/egg-idle.gif'),
-        expProgress: 0},
-        { id: genRandomKey(), name: 'wolf_egg', type:'egg', image: require('../assets/wolf/egg/egg-idle.gif'), walking_image: require('../assets/wolf/egg/egg-idle.gif'),
-        expProgress: 0},
-        { id: genRandomKey(), name: 'bird_egg', type:'egg', image: require('../assets/bird/egg/egg-idle.gif'), walking_image: require('../assets/bird/egg/egg-idle.gif'),
-        expProgress: 0}
+        { name: 'pineapple', image: require('../assets/fruits/pineapple.png')},
+        { name: 'artichoke', image: require('../assets/fruits/artichoke.png')},
+        { name: 'strawberry', image: require('../assets/fruits/water_strawberry.png')},
+        { name: 'earth_apple', image: require('../assets/fruits/earth_apple.png')},
+        {   
+            id: genRandomKey(), 
+            type: 'egg',
+            pet: 'dragon',
+            evolution: 0,
+            image: require('../assets/dragon/egg/egg-idle.gif'), 
+            walking_image: require('../assets/dragon/egg/egg-idle.gif'),
+            name: "dragon_egg",
+            expProgress: 0,
+        },
+        {   
+            id: genRandomKey(), 
+            type: 'egg',
+            pet: 'bird',
+            evolution: 0,
+            image: require('../assets/bird/egg/egg-idle.gif'), 
+            walking_image: require('../assets/bird/egg/egg-idle.gif'),
+            name: "bird_egg",
+            expProgress: 0,
+        }
     ];
-    
-    const getRandomFruit = () => {
-        const randomIndex = Math.floor(Math.random() * rewards.length);
-        return rewards[randomIndex];
-    };
     
     useEffect(() => {
         // Check if the modal is set to be visible.
@@ -45,16 +63,12 @@ const TreasureChest = ({ isVisible, onClose }) => { //state being passed in from
             const timer = setTimeout(() => {
                 // Get a random fruit from the predefined list.
                 const randomFruit = getRandomFruit();  
-            console.log('this is random fruit ', randomFruit)
-                
                 if (randomFruit.type  === 'egg') {
-                    // Update the local state to reflect the image of the random fruit, which is displayed in the modal.
                     setImageSource(randomFruit.image);
                     // Create a shallow copy of the existing inventory.
                     const updatedEggInventory = [...egg_inventory];
                     // Find the first item in the inventory that doesn't have an image and name - effectively an empty slot.
                     const firstEmptySlot = updatedEggInventory.find(item => !item.image && !item.name);
-                    
                     // Check if an empty slot was found.
                     if (firstEmptySlot) {
                         // Update the empty slot with the image and name of the random fruit.
@@ -64,6 +78,8 @@ const TreasureChest = ({ isVisible, onClose }) => { //state being passed in from
                         firstEmptySlot.walking_image = randomFruit.walking_image;
                         firstEmptySlot.id = randomFruit.id;
                         firstEmptySlot.expProgress = randomFruit.expProgress;
+                        firstEmptySlot.evolution = randomFruit.evolution;
+                        firstEmptySlot.pet = randomFruit.pet;
                     } else {
                         // If no empty slot was found, add the new fruit to the end of the inventory.
                         updatedEggInventory.push({ 
@@ -74,18 +90,13 @@ const TreasureChest = ({ isVisible, onClose }) => { //state being passed in from
                     }
                     // Dispatch an action to update the global inventory state with the modified inventory.
                     dispatch({ type: 'SET_EGG_INVENTORY', payload: updatedEggInventory });
-    
                 } else {
-
                     // Update the local state to reflect the image of the random fruit, which is displayed in the modal.
                     setImageSource(randomFruit.image);
-
                     // Create a shallow copy of the existing inventory.
                     const updatedInventory = [...inventory];
-        
                     // Find the first item in the inventory that doesn't have an image and name - effectively an empty slot.
                     const firstEmptySlot = updatedInventory.find(item => !item.image && !item.name);
-                    
                     // Check if an empty slot was found.
                     if (firstEmptySlot) {
                         // Update the empty slot with the image and name of the random fruit.
@@ -99,13 +110,10 @@ const TreasureChest = ({ isVisible, onClose }) => { //state being passed in from
                             name: randomFruit.name
                         });
                     }
-        
                     // Dispatch an action to update the global inventory state with the modified inventory.
                     dispatch({ type: 'SET_INVENTORY', payload: updatedInventory });
                 }
-
             }, 2000); 
-    
             // Clean-up function: This will run when the component is unmounted or if the effect runs again.
             return () => clearTimeout(timer);  // Clear the timer to prevent it from running if the effect is cleaned up.
         } else {
@@ -144,7 +152,8 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        marginTop: 20
+        marginTop: 20,
+        borderWidth: 3,
     },
     modalView: {
         margin: 5,
@@ -152,22 +161,22 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         padding: 20,
         alignItems: "center",
-      },
-      treasureImage: {
+        borderWidth: 3,
+    },
+    treasureImage: {
         height: 125,
         width: 125,
-      },
-      closeButton: {
+    },
+    closeButton: {
         marginTop: 10,
-        padding: 15,
+        padding: 5,
         backgroundColor: '#2196F3',
         borderRadius: 5,
-      },
-      closeButtonText: {
+    },
+    closeButtonText: {
         color: 'white',
         fontWeight: 'bold',
-      }
-
+    }
 })
 
 export default TreasureChest;

@@ -14,7 +14,8 @@ export default evolutionData = new Map([
         [2, {
             image: require('../assets/wolf/secondEvo/wolf-second-idle.gif'),
             walking_image: require('../assets/wolf/secondEvo/wolf-second-walking2.gif'),
-            name: 'wolf-second-evo'
+            name: 'wolf-second-evo',
+            type: 'pet',
 
         }],
         [3, {

@@ -1,31 +1,36 @@
 import React, { createContext, useReducer, useEffect , useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-//Splash Screen
-import SplashScreen from 'react-native-splash-screen'; // Import the splash screen
-
+import SplashScreen from 'react-native-splash-screen'; 
 
 // Creating a new context for our app.
 export const AppContext = createContext();
 
 const initialState = {
-    totalTime : 0,
+    isInventoryOpen: false,
+    totalTime: 0,
     expProgress: 0,
     inventory: [
-        { id: 1, image: require('../assets/fruits/rainbow_pineapple.png'), name: "rainbow_pineapple" },
-        { id: 2, image: require('../assets/fruits/mangosteen.png'), name: 'mangosteen' },
-        { id: 3, image: require('../assets/fruits/pear.png'), name: 'pear' },
-        { id: 4},
-
         // Extra fruits only for debugging.
         /*
-        { id: 4, image: require('../assets/fruits/blue_pineapple.png'), name: 'blue_pineapple' },
-        { id: 5, image: require('../assets/fruits/fruit_group.png'), name: 'fruit_group' },
-        { id: 6, image: require('../assets/fruits/pear.png'), name: 'pear'  }, 
-        { id: 7, image: require('../assets/fruits/water_strawberry.png'), name: 'water_strawberry' }, 
-        */
+        { id: 1, name: 'blue_pineapple', image: require('../assets/fruits/blue_pineapple.png') }, //works 
+        { id: 2, name: 'fire_peach', image: require('../assets/fruits/fire_peach.png') },
+        { id: 3, name: 'fruit_group', image: require('../assets/fruits/fruit_group.png') },
+        { id: 4, name: 'ice_pineapple', image: require('../assets/fruits/ice_pineapple.png') },
+        { id: 5, name: 'green_mango', image: require('../assets/fruits/green_mango.png') },
 
-        { id: 5 }, { id: 6}, {id: 7},{ id: 8 }, // Empty slots
+        { id: 6, name: 'mangosteen', image: require('../assets/fruits/mangosteen.png') },
+        { id: 7, name: 'pear', image: require('../assets/fruits/pear.png') },
+        { id: 8, name: 'rainbow_pineapple', image: require('../assets/fruits/rainbow_pineapple.png')},
+        { id: 9, name: 'pineapple', image: require('../assets/fruits/pineapple.png')},
+        { id: 10, name: 'artichoke', image: require('../assets/fruits/artichoke.png')},
+        { id: 11, name: 'strawberry', image: require('../assets/fruits/water_strawberry.png')},
+        { id: 12, name: 'earth_apple', image: require('../assets/fruits/earth_apple.png')},
+        */
+        { id: 1, name: 'blue_pineapple', image: require('../assets/fruits/blue_pineapple.png') }, 
+        { id: 2, name: 'fire_peach', image: require('../assets/fruits/fire_peach.png') },
+        { id: 3, name: 'fruit_group', image: require('../assets/fruits/fruit_group.png') },
+        { id: 4, name: 'ice_pineapple', image: require('../assets/fruits/ice_pineapple.png') },
+        { id: 5 }, { id: 6}, {id: 7},{ id: 8 }, 
         { id: 9 }, { id: 10 }, { id: 11 }, { id: 12 },
         { id: 13 }, { id: 14 }, { id: 15 }, { id: 16 },
         { id: 17 }, { id: 18 }, { id: 19 }, { id: 20 },
@@ -35,7 +40,8 @@ const initialState = {
 
     ],
     egg_inventory: [
-        /* Extra egg for debugging. 
+        /*
+        Debugging purposes.
         { 
             id: 109203, 
             type: 'egg',
@@ -57,7 +63,8 @@ const initialState = {
             expProgress: 0,
         }, 
         */
-        {id: 1}, {id: 2},{ id: 3 }, { id: 4 },
+        
+        {id: 1}, {id: 2}, { id: 3 }, { id: 4 },
         { id: 5 }, { id: 6 }, { id: 7 }, { id: 8 },
         { id: 9 }, { id: 10 }, { id: 11 }, { id: 12 },
         { id: 13 }, { id: 14 }, { id: 15 }, { id: 16 },
@@ -67,7 +74,8 @@ const initialState = {
         { id: 29 }, { id: 30 }, { id: 31 }, { id: 32 },
     ],
     pet_inventory: [
-        /* Extra pets for debugging.
+        /* 
+        Extra pets for debugging.
         { 
             id: 98485, 
             type: 'pet',
@@ -101,7 +109,7 @@ const initialState = {
         */
 
         { id: 1}, {id: 2}, {id: 3}, { id: 4 },
-        { id: 5 }, { id: 6 }, { id: 7 }, { id: 8 }, // Empty slots
+        { id: 5 }, { id: 6 }, { id: 7 }, { id: 8 }, 
         { id: 9 }, { id: 10 }, { id: 11 }, { id: 12 },
         { id: 13 }, { id: 14 }, { id: 15 }, { id: 16 },
         { id: 17 }, { id: 18 }, { id: 19 }, { id: 20 },
@@ -112,7 +120,9 @@ const initialState = {
     ],
     selected_pet:[ 
         {
-            /* Egg original selected pet.
+            /*
+            Debugging purposes
+
             id: 2930912,
             type: 'egg',
             pet: 'wolf',
@@ -130,7 +140,6 @@ const initialState = {
             walking_image: require('../assets/wolf/firstEvo/wolf-first-walking.gif'),
             name: 'wolf',
             expProgress: 0
-
         }
     ]
 };
@@ -138,15 +147,21 @@ const initialState = {
 // A reducer function to update our state based on actions.
 const reducer = (state, action) => {
     switch (action.type) {
-        case 'INCREMENT_EXP' :
-            // Extract the selected_pet from state
-            const selectedPet = state.selected_pet[0]; // Assuming there's only one selected pet
-            if (selectedPet) {
-                // Update the expProgress of the selected pet
-                selectedPet.expProgress = Math.min(selectedPet.expProgress + action.payload, 1);
-            }
-            // Return the updated state
-            return { ...state };
+
+        case 'INCREMENT_EXP': 
+        // Check if there is a selected pet in the state.
+        if (state.selected_pet[0]) { 
+            // Clone the selected pet object to avoid directly mutating the state.
+            const newSelectedPet = { ...state.selected_pet[0] };
+    
+            // Increment the experience progress of the cloned pet, ensuring it doesn't exceed 1.
+            newSelectedPet.expProgress = Math.min(newSelectedPet.expProgress + action.payload, 1);
+    
+            // Return the updated state with the modified selected pet.
+            return { ...state, selected_pet: [newSelectedPet] };
+        }
+        // If there is no selected pet, return the unchanged state.
+        return state;
 
         case 'SET_INVENTORY':
             // Return a new state with updated inventory
@@ -165,9 +180,11 @@ const reducer = (state, action) => {
             return {...state, ...action.payload};
 
         case 'SET_TOTAL_TIME':
-            return {...state, totalTime: action.payload}
+            return {...state, totalTime: action.payload};
+        case 'SET_INVENTORY_OPEN':
+            return {...state, isInventoryOpen: action.payload};
         default: 
-            return state;
+        return state;
     }
 };
 
@@ -187,7 +204,6 @@ const loadState = async () => {
         console.warn(" Failed to retrieve state from AsyncStorage.", e);
         return undefined;
     }
-
 }
 
 const saveState = async (state) => {
@@ -224,28 +240,6 @@ export const AppProvider = ({ children }) => {
             saveState(state);
         }
     }, [state]);
-
-    /* Just removed this
-    if (!hasLoaded) {  // Don't render children until the state has been loaded from AsyncStorage
-        return null;  // Or return a loading component
-    }
-    */
-
-    /*
-    if (!hasLoaded) {
-        SplashScreen.show();
-        return null;  // Or you can render a custom loading component here if you prefer
-    } else {
-        SplashScreen.hide();
-        return (
-            <AppContext.Provider value={{ state, dispatch }}>
-                {children}
-            </AppContext.Provider>
-        );
-    }
-
-    */
-
 
     return (
         <AppContext.Provider value={{state, dispatch}}>
