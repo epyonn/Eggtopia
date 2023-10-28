@@ -21,6 +21,7 @@ const initialState = {
         { id: 6, name: 'mangosteen', image: require('../assets/fruits/mangosteen.png') },
         { id: 7, name: 'pear', image: require('../assets/fruits/pear.png') },
         { id: 8, name: 'rainbow_pineapple', image: require('../assets/fruits/rainbow_pineapple.png')},
+        
         { id: 9, name: 'pineapple', image: require('../assets/fruits/pineapple.png')},
         { id: 10, name: 'artichoke', image: require('../assets/fruits/artichoke.png')},
         { id: 11, name: 'strawberry', image: require('../assets/fruits/water_strawberry.png')},
@@ -40,8 +41,9 @@ const initialState = {
 
     ],
     egg_inventory: [
+        
+        //Debugging purposes.
         /*
-        Debugging purposes.
         { 
             id: 109203, 
             type: 'egg',
@@ -64,7 +66,8 @@ const initialState = {
         }, 
         */
         
-        {id: 1}, {id: 2}, { id: 3 }, { id: 4 },
+        {id: 1}, {id: 2}, 
+        { id: 3 }, { id: 4 },
         { id: 5 }, { id: 6 }, { id: 7 }, { id: 8 },
         { id: 9 }, { id: 10 }, { id: 11 }, { id: 12 },
         { id: 13 }, { id: 14 }, { id: 15 }, { id: 16 },

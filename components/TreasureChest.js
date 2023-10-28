@@ -53,6 +53,16 @@ const TreasureChest = ({ isVisible, onClose }) => { //State being passed in from
             walking_image: require('../assets/bird/egg/egg-idle.gif'),
             name: "bird_egg",
             expProgress: 0,
+        },
+        {   
+            id: genRandomKey(), 
+            type: 'egg',
+            pet: 'wolf',
+            evolution: 0,
+            image: require('../assets/wolf/egg/egg-idle.gif'), 
+            walking_image: require('../assets/wolf/egg/egg-idle.gif'),
+            name: "wolf_egg",
+            expProgress: 0,
         }
     ];
     
