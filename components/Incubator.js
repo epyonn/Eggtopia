@@ -1,66 +1,56 @@
-import React, {useState, useContext} from 'react';
-import {AppContext} from '../context/AppContext';
-import {Image, TouchableOpacity, View, StyleSheet, Modal, Text, ScrollView} from 'react-native';
+import React, { useState, useContext, useEffect } from 'react';
+import { AppContext } from '../context/AppContext';
+import { Image, TouchableOpacity, View, StyleSheet, Modal, Text, ScrollView } from 'react-native';
 
 const Incubator = () => {
-    // use AppContext to access global state to dispatch the function
-    const {state, dispatch} = useContext(AppContext);
-    const egg_inventory = state.egg_inventory;
-    const inventory = state.inventory;
-    const pet_inventory = state.pet_inventory;
-    const selectedPet = state.selected_pet[0];
+    const { state, dispatch } = useContext(AppContext);
+    const { egg_inventory, pet_inventory, selected_pet } = state;
+    const selectedPet = selected_pet[0];
     const [isIncubatorOpen, setIncubator] = useState(false);
     const [selectedEggId, setSelectedEggId] = useState(null);
 
-    // Utility function to chunk an array into smaller arrays of specified size
     const chunkArray = (array, chunkSize) => {
-        const results = [];
-        while (array.length) {
-            results.push(array.splice(0,chunkSize))
+        let results = [];
+        for (let i = 0; i < array.length; i += chunkSize) {
+            results.push(array.slice(i, i + chunkSize));
         }
         return results;
     }
 
     const useItem = () => {
-            // Pet that will be added to the main screen based on Id chosen
-            const selectedPetData = egg_inventory.find(egg => egg.id === selectedEggId)
-            if(selectedPetData.type === "egg" && selectedPet.type === 'pet') {
-                // selectedPet is the egg that is active            
-                // Remove the selected egg from egg_inventory
-                const updatedEggInventory = egg_inventory.filter(egg => egg.id !== selectedEggId)
-                updatedEggInventory.push({id: Math.max(...updatedEggInventory.map(item => item.id)) + 1});
-                const updatedPetInventory = [...pet_inventory];
-                const emptySlotIndex = pet_inventory.findIndex(pet => !pet.name);
-                updatedPetInventory[emptySlotIndex] = selectedPet;
-                dispatch({ type:'SELECT_PET', payload: selectedPetData });
-                // Set Egg Inventory  
-                dispatch({ type:'SET_EGG_INVENTORY', payload: updatedEggInventory });
-                dispatch({ type: 'SET_PET_INVENTORY', payload: updatedPetInventory});
-            }
+        const selectedPetData = egg_inventory.find(egg => egg.id === selectedEggId);
+        if (!selectedPetData) return;
 
-            if (selectedPet.type === "egg" && selectedPetData.type === "egg")
-            {
-                const currentPet = selectedPet;
-                const updatedEggInventory = egg_inventory.filter(egg => egg.id !== selectedEggId)
-                updatedEggInventory.push({id: Math.max(...updatedEggInventory.map(item => item.id)) + 1});
-                const emptySlotIndex = egg_inventory.findIndex(egg => !egg.name)
-                updatedEggInventory[emptySlotIndex] = currentPet;
-                dispatch({ type:'SELECT_PET', payload: selectedPetData });
-                dispatch({ type: 'SET_EGG_INVENTORY', payload: updatedEggInventory})
+        let updatedEggInventory = egg_inventory.filter(egg => egg.id !== selectedEggId);
+        updatedEggInventory.push({ id: Math.max(...updatedEggInventory.map(item => item.id)) + 1 });
+
+        if (selectedPetData.type === "egg") {
+            if (selectedPet.type === 'pet') {
+                let updatedPetInventory = [...pet_inventory];
+                const emptySlotIndex = pet_inventory.findIndex(pet => !pet.name);
+                if (emptySlotIndex !== -1) {
+                    updatedPetInventory[emptySlotIndex] = selectedPet;
+                }
+                dispatch({ type: 'SELECT_PET', payload: selectedPetData });
+                dispatch({ type: 'SET_PET_INVENTORY', payload: updatedPetInventory });
+            } else if (selectedPet.type === "egg") {
+                const emptySlotIndex = updatedEggInventory.findIndex(egg => !egg.name);
+                if (emptySlotIndex !== -1) {
+                    updatedEggInventory[emptySlotIndex] = selectedPet;
+                }
+                dispatch({ type: 'SELECT_PET', payload: selectedPetData });
             }
-            setSelectedEggId(null);
-            setIncubator(false);
+        }
+
+        dispatch({ type: 'SET_EGG_INVENTORY', payload: updatedEggInventory });
+        setSelectedEggId(null);
+        setIncubator(false);
     };
+
     return (
         <View style={styles.container}>
-            <TouchableOpacity
-                onPress={() => setIncubator(true)}
-            >
-                <Image
-                    source={require('../assets/incubator/egg_incubator.png')}
-                    style={styles.incubator} 
-                
-                />
+            <TouchableOpacity onPress={() => setIncubator(true)}>
+                <Image source={require('../assets/incubator/egg_incubator.png')} style={styles.incubator} />
             </TouchableOpacity>
             <Modal
                 animationType="slide"
@@ -72,10 +62,9 @@ const Incubator = () => {
                     <View style={styles.modalView}>
                         <View style={styles.eggItems}>
                             <ScrollView>
-                            {chunkArray([...egg_inventory], 4).map((row, rowIndex) => (
-                                <View key={rowIndex} style={styles.inventoryRow}>
-                                    {
-                                        row.map((slot,index) => (
+                                {chunkArray([...egg_inventory], 4).map((row, rowIndex) => (
+                                    <View key={rowIndex} style={styles.inventoryRow}>
+                                        {row.map((slot, index) => (
                                             <TouchableOpacity
                                                 key={index}
                                                 style={[
@@ -84,42 +73,30 @@ const Incubator = () => {
                                                 ]}
                                                 onPress={() => {
                                                     if (slot.name) {
-                                                        setSelectedEggId(slot.id);
-                                                    } else {
-                                                        setSelectedEggId(null);
+                                                        setSelectedEggId(prevId => prevId === slot.id ? null : slot.id);
                                                     }
                                                 }}
                                             >
                                                 {slot.image && <Image source={slot.image} style={styles.eggImage} />}
                                             </TouchableOpacity>
-                                        ))
-                                    }
-                                </View>
-                            ))}
+                                        ))}
+                                    </View>
+                                ))}
                             </ScrollView>
                             <View style={styles.buttonRow}>
-                                <TouchableOpacity
-                                    style={styles.eggButton}
-                                    onPress={useItem}
-                                >
-                                    <Text style={styles.eggButtonText}> Select </Text>
+                                <TouchableOpacity style={styles.eggButton} onPress={useItem}>
+                                    <Text style={styles.eggButtonText}>Select</Text>
                                 </TouchableOpacity>
-                                <TouchableOpacity
-                                    style={styles.eggButton}
-                                    onPress={() => {
-                                        setIncubator(false);
-                                    }}
-                                >
-                                    <Text style={styles.eggButtonText}> Close </Text>
+                                <TouchableOpacity style={styles.eggButton} onPress={() => setIncubator(false)}>
+                                    <Text style={styles.eggButtonText}>Close</Text>
                                 </TouchableOpacity>
-
                             </View>
                         </View>
                     </View>
                 </View>
             </Modal>
         </View>
-    )
+    );
 }
 
 const styles = StyleSheet.create({

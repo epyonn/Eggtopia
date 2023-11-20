@@ -13,6 +13,7 @@ const BrownBag = () => {
     const egg_inventory = state.egg_inventory;
     const gifOpacity = useState(new Animated.Value(0))[0];
     const isInventoryOpen = state.isInventoryOpen;
+    const totalTime = state.totalTime
 
     // Define local component states for inventory modal visibility and selected fruit properties.
     const [selectedFruit, setSelectedFruit] = useState(null);
@@ -38,7 +39,7 @@ const BrownBag = () => {
                     // Dispatch to increment user experience by a given amount.
                     // Original payload 0.8 for debugging.
                     //dispatch({ type: 'INCREMENT_EXP', payload: 0.02 });
-                    dispatch({ type: 'INCREMENT_EXP', payload: 0.03 });
+                    dispatch({ type: 'INCREMENT_EXP', payload: 0.8 });
                     fruitSound.play((success) => {
                         if (success) {
                             console.log('Sound played successfully');
@@ -231,7 +232,7 @@ const BrownBag = () => {
                                 <Text
                                     style={styles.timerText}
                                 >
-                                    {`${Math.floor(state.totalTime / 60).toString().padStart(2, '0')}:${(state.totalTime % 60).toString().padStart(2, '0')}`}
+                                    {`${Math.floor(totalTime / 60).toString().padStart(2, '0')}:${(totalTime % 60).toString().padStart(2, '0')}`}
                                 </Text>
                             </View>
                         </View>

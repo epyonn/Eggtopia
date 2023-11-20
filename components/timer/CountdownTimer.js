@@ -1,8 +1,12 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
-import { AppContext } from '../context/AppContext';
+import { AppContext } from '../../context/AppContext';
 import { View, Text, TouchableOpacity, StyleSheet, Image, Modal } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import TreasureChest from './TreasureChest';
+import TreasureChest from '../TreasureChest';
+import TimerDisplay from './TimerDisplay';
+import PetImage from './PetImage';
+import TimePickerModal from './TimePickerModal';
+import ResetButton from './ResetButton';
 
 const CountdownTimer = ({ initialHours = 0, initialMinutes = 0, initialSeconds = 0 }) => {
     // useContext hook to access the global state and dispatch function
@@ -56,7 +60,7 @@ const CountdownTimer = ({ initialHours = 0, initialMinutes = 0, initialSeconds =
     ];
 
     // useEffect hook to change the gif every 1.5 seconds
-    // Eventual implementation of more animation variety. Need more assets.
+    // Eventual implementation of more animation variety. Need more assets.
     useEffect(() => {
         const gifInterval = setInterval(() => {
             if (isTimerRunning.current) {
@@ -82,6 +86,7 @@ const CountdownTimer = ({ initialHours = 0, initialMinutes = 0, initialSeconds =
                             });
                             dispatch({ type: "SET_INVENTORY_OPEN", payload: false})
                             setShowTreasureChest(true);
+
                             const totalTimeInMinutes = (startHours * 60) + startMinutes;
                             let updatedTotalMinutes = state.totalTime + totalTimeInMinutes;
                             dispatch({ type:'SET_TOTAL_TIME', payload: updatedTotalMinutes})
@@ -98,11 +103,20 @@ const CountdownTimer = ({ initialHours = 0, initialMinutes = 0, initialSeconds =
                     setSeconds(59);
                 }
             } else {
-                setSeconds(seconds - 1);  // Decrement the seconds
+                setSeconds(seconds - 1);  
             }
         }, 1000);
         return () => clearInterval(myInterval);  // Cleanup function to clear the interval when unmounting or state changes
     }, [hours, minutes, seconds]);
+
+    const handleConfirmTime = (selectedHours, selectedMinutes) => {
+      setHours(selectedHours);
+      setMinutes(selectedMinutes);
+      setSeconds(0);
+      setStartHours(selectedHours);
+      setStartMinutes(selectedMinutes);
+      setPickerVisibility(false);
+    };
 
     return (
         <View style={styles.container}>
@@ -110,78 +124,38 @@ const CountdownTimer = ({ initialHours = 0, initialMinutes = 0, initialSeconds =
               isVisible={showTreasureChest}
               onClose={() => setShowTreasureChest(false)}
           />
-        <View style={styles.expBarLabelContainer}> 
-        <View style={styles.textContainer}>
-          <Text style={styles.expText}>EXP</Text>
-        </View>
-        <View style={styles.expBarContainer}>
-          <View style={[styles.expBarProgress, { width: `${selected_pet.expProgress * 100}%`}]} />
-        </View>
-        </View>
-        { hours === 0 && minutes === 0 && seconds === 0 ? (
-          <Image
-            source={selected_pet.image}
-            style={styles.monster}
-          />) : (
-          <Image
-            source={selected_pet.walking_image}
-            style={styles.monster}
-          />
-          )
-        }
-        <TouchableOpacity onPress={() => setPickerVisibility(true)}>
-          <Text style={styles.timerText}>
-            {hours}:{minutes < 10 ? `0${minutes}` : minutes}:{seconds < 10 ? `0${seconds}` : seconds}
-          </Text>
-        </TouchableOpacity>
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={isPickerVisible}
-          onRequestClose={() => setPickerVisibility(false)}
-        >
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <View style={styles.pickerContainer}>
-              <Picker
-                selectedValue={tempHours}
-                style={{ width: 150 }}
-                onValueChange={(itemValue) => setTempHours(itemValue)}>
-                {Array.from({ length: 24 }, (_, index) => (
-                  <Picker.Item key={index} label={`${index} Hr`} value={index} />
-                ))}
-              </Picker>
-              <Picker
-                selectedValue={tempMinutes}
-                style={{ width: 150 }}
-                onValueChange={(itemValue) => {
-                  setTempMinutes(itemValue);
-                  //setSeconds(0);
-                }}>
-                {Array.from({ length: 60 }, (_, index) => (
-                  <Picker.Item key={index} label={`${index} Min`} value={index} />
-                ))}
-              </Picker>
+
+          <View style={styles.expBarLabelContainer}> 
+            <View style={styles.textContainer}>
+              <Text style={styles.expText}>EXP</Text>
             </View>
-            <TouchableOpacity onPress={() => {
-              setHours(tempHours);
-              setMinutes(tempMinutes);
-              setSeconds(0);
-              // Total Time
-              setStartHours(tempHours);  // Update starting hours
-              setStartMinutes(tempMinutes);  
-              setPickerVisibility(false)
-            }}
-            style={styles.resetButton}
-            >
-              <Text>Done</Text>
-            </TouchableOpacity>
+            <View style={styles.expBarContainer}>
+              <View style={[styles.expBarProgress, { width: `${selected_pet.expProgress * 100}%`}]} />
+            </View>
           </View>
-        </View>
-      </Modal>
-      <TouchableOpacity onPress={resetTimer} style={styles.resetButton}>
-        <Text style={styles.buttonText}> Reset </Text>
-      </TouchableOpacity>
+
+          <PetImage 
+              hours={hours} 
+              minutes={minutes} 
+              seconds={seconds} 
+              selectedPet={selected_pet} 
+          />
+
+          <TouchableOpacity onPress={() => setPickerVisibility(true)}>
+            <TimerDisplay hours={hours} minutes={minutes} seconds={seconds} />
+          </TouchableOpacity>
+
+          <TimePickerModal
+                isVisible={isPickerVisible}
+                onClose={() => setPickerVisibility(false)}
+                hours={tempHours}
+                minutes={tempMinutes}
+                setHours={setTempHours}
+                setMinutes={setTempMinutes}
+                onConfirm={handleConfirmTime}
+            />
+            
+          <ResetButton onReset={resetTimer}/>
       </View>
     );
 };

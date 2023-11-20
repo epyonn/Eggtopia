@@ -11,7 +11,7 @@ const initialState = {
     expProgress: 0,
     inventory: [
         // Extra fruits only for debugging.
-        /*
+        
         { id: 1, name: 'blue_pineapple', image: require('../assets/fruits/blue_pineapple.png') }, //works 
         { id: 2, name: 'fire_peach', image: require('../assets/fruits/fire_peach.png') },
         { id: 3, name: 'fruit_group', image: require('../assets/fruits/fruit_group.png') },
@@ -26,13 +26,17 @@ const initialState = {
         { id: 10, name: 'artichoke', image: require('../assets/fruits/artichoke.png')},
         { id: 11, name: 'strawberry', image: require('../assets/fruits/water_strawberry.png')},
         { id: 12, name: 'earth_apple', image: require('../assets/fruits/earth_apple.png')},
-        */
+        
+
+        /*
         { id: 1, name: 'blue_pineapple', image: require('../assets/fruits/blue_pineapple.png') }, 
         { id: 2, name: 'fire_peach', image: require('../assets/fruits/fire_peach.png') },
         { id: 3, name: 'fruit_group', image: require('../assets/fruits/fruit_group.png') },
         { id: 4, name: 'ice_pineapple', image: require('../assets/fruits/ice_pineapple.png') },
+        
         { id: 5 }, { id: 6}, {id: 7},{ id: 8 }, 
         { id: 9 }, { id: 10 }, { id: 11 }, { id: 12 },
+        */
         { id: 13 }, { id: 14 }, { id: 15 }, { id: 16 },
         { id: 17 }, { id: 18 }, { id: 19 }, { id: 20 },
         { id: 21 }, { id: 22 }, { id: 23 }, { id: 24 },
@@ -65,9 +69,39 @@ const initialState = {
             expProgress: 0,
         }, 
         */
-        
-        {id: 1}, {id: 2}, 
-        { id: 3 }, { id: 4 },
+
+        { 
+            id: 109203, 
+            type: 'egg',
+            pet: 'dragon',
+            evolution: 0,
+            image: require('../assets/dragon/egg/egg-idle.gif'), 
+            walking_image: require('../assets/dragon/egg/egg-idle.gif'),
+            name: "dragon_egg",
+            expProgress: 0,
+        }, 
+        { 
+            id: 158323, 
+            type: 'egg',
+            pet: 'bird',
+            evolution: 0,
+            image: require('../assets/bird/egg/egg-idle.gif'), 
+            walking_image: require('../assets/bird/egg/egg-idle.gif'),
+            name: "bird_egg",
+            expProgress: 0,
+        }, 
+        { 
+            id: 158943, 
+            type: 'egg',
+            pet: 'wolf',
+            evolution: 0,
+            image: require('../assets/wolf/egg/egg-idle.gif'), 
+            walking_image: require('../assets/wolf/egg/egg-idle.gif'),
+            name: "wolf_egg",
+            expProgress: 0,
+        },         
+        //{id: 1}, {id: 2},{ id: 3 }, 
+        { id: 4 },
         { id: 5 }, { id: 6 }, { id: 7 }, { id: 8 },
         { id: 9 }, { id: 10 }, { id: 11 }, { id: 12 },
         { id: 13 }, { id: 14 }, { id: 15 }, { id: 16 },
@@ -183,7 +217,8 @@ const reducer = (state, action) => {
             return {...state, ...action.payload};
 
         case 'SET_TOTAL_TIME':
-            return {...state, totalTime: action.payload};
+            return {...state, totalTime: state.totalTime + action.payload};
+
         case 'SET_INVENTORY_OPEN':
             return {...state, isInventoryOpen: action.payload};
         default: 
@@ -195,13 +230,15 @@ const reducer = (state, action) => {
 const loadState = async () => {
     try {
         const serializedState = await AsyncStorage.getItem('appState');
+
         // Reset State 
-        //const serializedState = await AsyncStorage.setItem('appState', JSON.stringify(initialState));
+        // const serializedState = await AsyncStorage.setItem('appState', JSON.stringify(initialState));
 
         if (serializedState === null) {
             return undefined;
         }
-        console.log(JSON.parse(serializedState))
+
+        // console.log(JSON.parse(serializedState))
         return JSON.parse(serializedState);
     } catch (e) {
         console.warn(" Failed to retrieve state from AsyncStorage.", e);
