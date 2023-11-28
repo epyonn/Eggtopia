@@ -9,9 +9,12 @@ const initialState = {
     isInventoryOpen: false,
     totalTime: 0,
     expProgress: 0,
+    selectedFruitId: null,
+    selectedPetId: null,
+    activeTab: 'Fruits',
+
     inventory: [
         // Extra fruits only for debugging.
-        
         { id: 1, name: 'blue_pineapple', image: require('../assets/fruits/blue_pineapple.png') }, //works 
         { id: 2, name: 'fire_peach', image: require('../assets/fruits/fire_peach.png') },
         { id: 3, name: 'fruit_group', image: require('../assets/fruits/fruit_group.png') },
@@ -27,25 +30,23 @@ const initialState = {
         { id: 11, name: 'strawberry', image: require('../assets/fruits/water_strawberry.png')},
         { id: 12, name: 'earth_apple', image: require('../assets/fruits/earth_apple.png')},
         
-
         /*
         { id: 1, name: 'blue_pineapple', image: require('../assets/fruits/blue_pineapple.png') }, 
         { id: 2, name: 'fire_peach', image: require('../assets/fruits/fire_peach.png') },
         { id: 3, name: 'fruit_group', image: require('../assets/fruits/fruit_group.png') },
         { id: 4, name: 'ice_pineapple', image: require('../assets/fruits/ice_pineapple.png') },
-        
         { id: 5 }, { id: 6}, {id: 7},{ id: 8 }, 
         { id: 9 }, { id: 10 }, { id: 11 }, { id: 12 },
         */
+
         { id: 13 }, { id: 14 }, { id: 15 }, { id: 16 },
         { id: 17 }, { id: 18 }, { id: 19 }, { id: 20 },
         { id: 21 }, { id: 22 }, { id: 23 }, { id: 24 },
         { id: 25 }, { id: 26 }, { id: 27 }, { id: 28 },
         { id: 29 }, { id: 30 }, { id: 31 }, { id: 32 },
-
     ],
+
     egg_inventory: [
-        
         //Debugging purposes.
         /*
         { 
@@ -69,7 +70,6 @@ const initialState = {
             expProgress: 0,
         }, 
         */
-
         { 
             id: 109203, 
             type: 'egg',
@@ -169,6 +169,7 @@ const initialState = {
             name: 'wolf-egg',
             expProgress: 0
             */
+
             id: 2930912,
             type: 'pet',
             pet: 'wolf',
@@ -178,7 +179,10 @@ const initialState = {
             name: 'wolf',
             expProgress: 0
         }
-    ]
+    ],
+
+
+
 };
 
 // A reducer function to update our state based on actions.
@@ -221,8 +225,18 @@ const reducer = (state, action) => {
 
         case 'SET_INVENTORY_OPEN':
             return {...state, isInventoryOpen: action.payload};
+
+        case 'SET_FRUIT_ID':
+            return {...state, selectedFruitId: action.payload};
+        
+        case 'SET_PET_ID':
+            return {...state, selectedPetId: action.payload};
+
+        case 'SET_INVENTORY_TAB':
+            return {...state, activeTab: action.payload};
+        
         default: 
-        return state;
+            return state;
     }
 };
 
@@ -270,7 +284,6 @@ export const AppProvider = ({ children }) => {
             }
             setHasLoaded(true);  // Set the loading state to true after loading
         };
-
         fetchState();
     }, []);
 

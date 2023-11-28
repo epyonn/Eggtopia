@@ -1,8 +1,10 @@
 import React, {useState, useContext, useEffect} from 'react';
-import { AppContext } from '../context/AppContext';
+import { AppContext } from '../../context/AppContext';
 import { Image, Modal, StyleSheet, TouchableOpacity, View, Text , Animated, ScrollView} from 'react-native';
 import Sound from 'react-native-sound';
-import evolutionData from '../context/evolutionData';
+import evolutionData from '../../context/evolutionData';
+import InventoryModal from './InventoryModal';
+import { styles } from '../../styles/styles';
 
 const BrownBag = () => {
     // Use AppContext to access global state and the dispatch function.
@@ -13,17 +15,25 @@ const BrownBag = () => {
     const egg_inventory = state.egg_inventory;
     const gifOpacity = useState(new Animated.Value(0))[0];
     const isInventoryOpen = state.isInventoryOpen;
-    const totalTime = state.totalTime
+    const totalTime = state.totalTimel
 
     // Define local component states for inventory modal visibility and selected fruit properties.
     const [selectedFruit, setSelectedFruit] = useState(null);
-    const [selectedFruitId, setSelectedFruitId] = useState(null);
-    const [selectedPetId, setSelectedPetId] = useState(null);
-    const [activeTab, setActiveTab] = useState('Fruits');
+
+    // Use redux for selected fruit and pet id
+    //const [selectedFruitId, setSelectedFruitId] = useState(null);
+    //const [selectedPetId, setSelectedPetId] = useState(null);
+
+    const selectedFruitId = state.selectedFruitId;
+    const selectedPetId = state.selectedPetId;
+
+    //const [activeTab, setActiveTab] = useState('Fruits');
+    const activeTab = state.activeTab;
+
     const [isEvolutionModalVisible, setEvolutionModalVisible] = useState(false);
     
     // Sounds and Exp Gif
-    const fruitSound = new Sound(require('../assets/sounds/munching-food.mp3'), (error) => {
+    const fruitSound = new Sound(require('../../assets/sounds/munching-food.mp3'), (error) => {
         if (error) {
             console.log('failed to load the sound new update', error);
             return;
@@ -60,10 +70,16 @@ const BrownBag = () => {
                 }
                 return item;  // returning the item unchanged if the condition isn't met
             });
-            dispatch({ type: 'SET_INVENTORY', payload: updatedInventory}) 
+            dispatch({ type: 'SET_INVENTORY', payload: updatedInventory}); 
             // Reset selected fruit states and close the inventory
-            setSelectedFruitId(null);
-            setSelectedPetId(null);
+
+            // change useState hooks to reference Redux data
+            //setSelectedFruitId(null);
+            //setSelectedPetId(null);
+            
+            dispatch({ type: 'SET_FRUIT_ID', payload: null});
+            dispatch({ type: 'SET_PET_ID', payload: null});
+            
             // Close inventory
             dispatch({ type: 'SET_INVENTORY_OPEN', payload: false});
             //setInventory(false);
@@ -82,7 +98,7 @@ const BrownBag = () => {
                     const updatedPetInventory = pet_inventory.filter(pet => pet.id !== selectedPetId);
                     updatedPetInventory.push({id: Math.max(...updatedPetInventory.map(item => item.id)) + 1});
                     dispatch({ type: 'SET_PET_INVENTORY', payload: updatedPetInventory })
-                    setSelectedPetId(null);
+                    dispatch({ type: 'SET_PET_ID', payload: null});
                     // Use dispatch instead of setter functions.
                     dispatch({type: 'SET_INVENTORY_OPEN', payload: false});
                 } else {
@@ -98,6 +114,7 @@ const BrownBag = () => {
             }
         }  
     };
+
     // useEffect for pet evolution
     const evolvePet = () => {
         if (selectedPet.expProgress >= 1 && selectedPet.evolution !== 3) {
@@ -121,6 +138,7 @@ const BrownBag = () => {
             setEvolutionModalVisible(true);
         }
     };
+
     // Use useEffect to call evolvePet whenever selectedPet.expProgress changes
     useEffect(() => {
         evolvePet();
@@ -133,19 +151,26 @@ const BrownBag = () => {
         }
         return results;
     };
+
     // Component JSX rendering logic.
     return (
         <View style={styles.container}>
+            {/* EXP GIF */}
             {
                 expGif &&
                 <Image
-                source={require('../assets/expBar/plusExpver1.gif')}
+                source={require('../../assets/expBar/plusExpver1.gif')}
                 style={styles.expGif}
                 />
             }
-            <TouchableOpacity onPress={() => dispatch({ type: 'SET_INVENTORY_OPEN', payload: true}, console.log('pressed' + isInventoryOpen)) /*setInventory(true)*/}>
-                <Image source={require('../assets/bag/brownbag7.png')} style={styles.brownBag} />
+
+            <TouchableOpacity onPress={() => dispatch({ type: 'SET_INVENTORY_OPEN', payload: true}, console.log('pressed ' + isInventoryOpen))}>
+                <Image source={require('../../assets/bag/brownbag7.png')} style={styles.brownBag} />
             </TouchableOpacity>
+            
+            {/* Modal Inventory Start */}
+            {/* 
+
             <Modal
                 animationType='slide'
                 transparent={true}
@@ -240,255 +265,55 @@ const BrownBag = () => {
                     </View>
                 </View>
             </Modal>
-            <Modal
-            animationType='slide'
-            transparent={true}
-            visible={isEvolutionModalVisible}
-            onRequestClose={() => setEvolutionModalVisible(false)}
-            >
-            <View style={styles.centeredView}>
-                <View style={styles.modalView}>
-                    <View style={styles.evolutionContainer}>
-                        <Animated.Image 
-                            source={selectedPet.image} 
-                            style={[styles.evolutionImage, {opacity: Animated.subtract(1, gifOpacity)}]}
-                        />
-                        <Animated.Image 
-                            source={evolutionData.get(selectedPet.pet)?.get(selectedPet.evolution + 1)?.image || selectedPet.image} 
-                            style={[styles.evolutionImage, {opacity: gifOpacity}]}
-                        />
-                        <Text style={styles.evolutionText}>Your pet has evolved!</Text>
+
+            */}
+
+            <InventoryModal
+                isInventoryOpen={isInventoryOpen} // Replace with your state or prop
+
+                activeTab = {activeTab}
+                //setActiveTab={setActiveTab} // Replace with your function
+                inventory={inventory} // Replace with your state or prop
+                petInventory={pet_inventory} // Replace with your state or prop
+                selectedFruitId={selectedFruitId} // Replace with your state or prop
+                selectedPetId={selectedPetId} // Replace with your state or prop
+                dispatch={dispatch} // Replace with your dispatch function
+                totalTime = {totalTime}
+            />
+
+            {/* end of modal inventory */}
+
+                <Modal
+                    animationType='slide'
+                    transparent={true}
+                    visible={isEvolutionModalVisible}
+                    onRequestClose={() => setEvolutionModalVisible(false)}
+                >
+                <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                        <View style={styles.evolutionContainer}>
+                            <Animated.Image 
+                                source={selectedPet.image} 
+                                style={[styles.evolutionImage, {opacity: Animated.subtract(1, gifOpacity)}]}
+                            />
+                            <Animated.Image 
+                                source={evolutionData.get(selectedPet.pet)?.get(selectedPet.evolution + 1)?.image || selectedPet.image} 
+                                style={[styles.evolutionImage, {opacity: gifOpacity}]}
+                            />
+                            <Text style={styles.evolutionText}>Your pet has evolved!</Text>
+                        </View>
+                        <TouchableOpacity 
+                            style={styles.evolutionButton} 
+                            onPress={() => setEvolutionModalVisible(false)}
+                        >
+                            <Text style={styles.inventoryButtonText}>Close</Text>
+                        </TouchableOpacity>
                     </View>
-                    <TouchableOpacity 
-                        style={styles.evolutionButton} 
-                        onPress={() => setEvolutionModalVisible(false)}
-                    >
-                        <Text style={styles.inventoryButtonText}>Close</Text>
-                    </TouchableOpacity>
                 </View>
-            </View>
-            </Modal>
+                </Modal>
             </View>
     );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    width: 100,
-    height: 100,
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start',
-  },
-  brownBag: {
-    width: 100,
-    height: 100,
-    position: 'absolute',
-    top: 40,
-    left: 0,
-  },
-  centeredView: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 22
-  },
-  modalView: {
-    margin: 20,
-    //backgroundColor: '#DBA463',
-    backgroundColor: '#F4D29C',
-    backgroundColor: 'white',
-    borderRadius: 20,
-    padding: 15,
-    justifyContent: 'space-between',
-    borderWidth: 3,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-    maxWidth: '90%', // Add a max width
-    maxHeight: '80%'  // Add a max height
-
-  },
-  inventoryItems: {
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-    height: 430,
-
-  },
-  inventoryRow: {
-    display: 'flex',
-    flexDirection: 'row',
-  },
-  inventoryFruit: {
-    margin: 5,
-    borderWidth: 3,
-    borderRadius: 10,
-    width: 64,
-    height: 64,
-    backgroundColor: '#FFFFFF',
-    shadowColor: "#000",
-    shadowOffset: { 
-        width: 3, 
-        height: 3 
-    },  
-    shadowOpacity: 0.5,
-    shadowRadius: 1,
-    shadowOffset: { 
-        width: 3, 
-        height: 3 
-    },
-    elevation: 2,
-  },
-  inventorySlot: {
-    width: 50,
-    height: 50,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    margin: 5,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-    shadowColor: "#000",
-    shadowOffset: { 
-        width: -1, 
-        height: -1 
-    },
-    shadowOpacity: 0.0,
-    shadowRadius: 5,
-    shadowOffset: { 
-        width: 3, 
-        height: 3 
-    },
-    elevation: 1,
-  },
-  selectedItem: {
-    borderWidth: 3,
-    borderRadius: 10,
-    backgroundColor: '#B3B9D1',
-  },
-  inventoryButton: {
-    backgroundColor: "#2196F3",
-    borderRadius: 20,
-    padding: 8,
-    elevation: 2,
-    marginTop: 15,
-    alignSelf: 'center',
-    marginRight: 5,
-    //borderWidth: 1,
-  },
-  inventoryButtonText: {
-    color: "white",
-    fontWeight: "bold",
-    textAlign: "center",
-    
-  },
-  buttonRow: {
-    dislay: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    
-  },
-  tabs: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 15,
-  },
-  tab: {
-    flex: 1,
-    alignItems: 'center',
-    padding: 10,
-    borderBottomWidth: 2,
-    borderBottomColor: 'transparent',
-  },
-  activeTab: {
-    borderBottomColor: '#2196F3',
-  },
-  inventoryImage: {
-    width: 60,
-    height: 60,
-  },
-  evolutionContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 20, // or adjust this value to get desired spacing
-    maxHeight: '90%',
-    maxHeight: '80%',
-    padding: 20
-  },  
-  evolutionImage: {
-    width: 200,
-    height: 200,
-    position: 'absolute',
-    resizeMode: 'cover' // make sure the image covers the given width and height without distortion
-  },
-  evolutionText: {
-    marginTop: 230, // this value should be slightly more than the height of the images to position the text underneath them
-    fontSize: 16, // adjust as per your requirement
-    //fontWeight: 'bold',
-    textAlign: 'center'
-  },
-  evolutionButton: {
-    backgroundColor: "#2196F3",
-    borderRadius: 20,
-    padding: 10,
-    elevation: 2,
-    marginTop: 15,
-    alignSelf: 'center',
-    marginBottom: 5, // Add marginBottom to control the distance between the text and the button
-  },
-  timerText: {
-    fontSize: 20,
-    marginVertical: 10,
-    borderWidth: 2,
-    backgroundColor: "white",
-    borderRadius: 5,
-    paddingRight: 5,
-    paddingLeft: 5,
-    overflow: 'hidden',
-    marginLeft: 2,
-  },
-  timeContainer: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 15,
-    marginLeft: 5,
-  },
-  timeLabel: {
-    fontSize: 20,
-    marginVertical: 10,
-    borderWidth: 2,
-    backgroundColor: "white",
-    borderRadius: 5,
-    paddingRight: 0,
-    paddingLeft: 5,
-    overflow: 'hidden',
-    marginLeft: 5,
-    backgroundColor: '#B0B0B0',
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  labelText: {
-    color: 'yellow',
-    fontWeight: 'bold',      
-    zIndex: 2,
-    borderRadius: 10,
-    padding: 3,
-  },
-  expGif: {
-    width: 200,
-    height: 200,
-    position: "absolute",
-    alignSelf: "center", 
-    transform: [{ translateY: 140}, {translateX: 150}],
-    zIndex: 1000 // Adj
-  }
-});
-
 export default BrownBag;
+

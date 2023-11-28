@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { AppProvider } from './context/AppContext';
 import { SafeAreaView, StyleSheet, Text, ImageBackground } from 'react-native';
 import CountdownTimer from './components/timer/CountdownTimer'
-import BrownBag from './components/BrownBag'
+import BrownBag from './components/inventory/BrownBag'
 import Incubator from './components/Incubator'
 import { styles } from './styles/styles'
 import SplashScreen from 'react-native-splash-screen';
