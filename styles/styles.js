@@ -234,6 +234,6 @@ export const styles = StyleSheet.create({
         position: "absolute",
         alignSelf: "center", 
         transform: [{ translateY: 140}, {translateX: 150}],
-        zIndex: 1000 // Adj
+        zIndex: -1 // Adj
       }
 });

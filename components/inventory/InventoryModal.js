@@ -6,7 +6,6 @@ import { styles } from '../../styles/styles';
 import Sound from 'react-native-sound';
 
 
-
 const InventoryModal = ({
     isInventoryOpen,
     activeTab,
@@ -17,12 +16,12 @@ const InventoryModal = ({
     setSelectedPetId,
     dispatch,
     totalTime,
-    teststring,
+    setExpGif,
 }) => {
-    
-    const {state} = useContext(AppContext);
-    const [expGif, setExpGif] = useState(false);
+    const { state } = useContext(AppContext);
+    const selectedPet = state.selected_pet[0];
 
+    
 
     const chunkArray = (array, size) => {
         const chunkedArr = [];
@@ -34,15 +33,6 @@ const InventoryModal = ({
         return chunkedArr;
     };
 
-    console.log(teststring)
-    if(activeTab === undefined) {return console.log('loading')}
-
-    //const activeTab = 'Fruits';
-    console.log('THIS IS TYPE OF ', typeof activeTab);
-
-    
-
-   // const {activeTab} = state;
     const renderInventoryItems = (items, setSelectedId) => {
         return items.map((itemRow, rowIndex) => (
             <View key={rowIndex} style={styles.inventoryRow}>
@@ -97,21 +87,13 @@ const InventoryModal = ({
             });
             dispatch({ type: 'SET_INVENTORY', payload: updatedInventory}) 
             // Reset selected fruit states and close the inventory
-            
-            // FIX THIS TO BE DISPATCHED.
-
-            //setSelectedFruitId(null);
-            //setSelectedPetId(null);
-
-
-
 
             dispatch({ type: 'SET_FRUIT_ID', payload: null });
             dispatch({ type: 'SET_PET_ID', payload: null });
 
             // Close inventory
             dispatch({ type: 'SET_INVENTORY_OPEN', payload: false});
-            //setInventory(false);
+            
         } else if (activeTab === 'Pets') {
 
             // Pet that will be added to the main screen based on Id chosen
@@ -136,7 +118,7 @@ const InventoryModal = ({
                     updatedPetInventory.unshift(selectedPet);
                     dispatch({ type: 'SET_PET_INVENTORY', payload: updatedPetInventory });
                     dispatch({ type:'SELECT_PET', payload: selectedPetData });
-                    setSelectedPetId(null);
+                    dispatch({ type: 'SET_PET_ID', payload: null })
                     // Use dispatch instead of setting functions
                     dispatch({ type: 'SET_INVENTORY_OPEN', payload: false});
                 }
@@ -145,32 +127,27 @@ const InventoryModal = ({
     };
 
     return (
+
+
         <Modal
             animationType='slide'
             transparent={true}
             visible={isInventoryOpen}
             onRequestClose={() => dispatch({ type: 'SET_INVENTORY_OPEN', payload: false})}
-            >
+        >
+
+
         <View style={styles.centeredView}>
             <View style={styles.modalView}>
             <View style={styles.tabs}>
                 <TouchableOpacity 
                     style={[styles.tab, activeTab === 'Fruits' && styles.activeTab]}
-                    // Change to dispatch here
-                    //onPress={() => setActiveTab('Fruits')}>
-                //onPress={() => dispatch({ type: 'SET_INVENTORY_TAB', payload: 'Fruits' })}>
-                >
-                    {console.log(activeTab)}
+                    onPress={() => dispatch({ type: 'SET_INVENTORY_TAB', payload: 'Fruits' })}>
                     <Text> Fruits </Text>
                 </TouchableOpacity>
                 <TouchableOpacity 
                     style={[styles.tab, activeTab === 'Pets' && styles.activeTab]}
-                    // Change to dispatch here
-
-                    //onPress={() => setActiveTab('Pets')}
-                    //onPress={() => dispatch({ type: 'SET_INVENTORY_TAB', payload: 'Pets'})}>
-                    >
-                    {console.log(activeTab)}
+                    onPress={() => dispatch({ type: 'SET_INVENTORY_TAB', payload: 'Pets'})}>
                     <Text> Pets </Text>
                 </TouchableOpacity>
         </View>
@@ -201,8 +178,8 @@ const InventoryModal = ({
                                         //setSelectedFruitId(null);
                                         //setSelectedPetId(null)
 
-                                        dispatch({ type: 'SET_FRUIT_ID', payload: slot.id})
-                                        dispatch({ type: 'SET_INVENTORY_TAB', payload: slot.id})
+                                        dispatch({ type: 'SET_FRUIT_ID', payload: null})
+                                        dispatch({ type: 'SET_PET_ID', payload: null})
                                     }
                                 }}>
                                 <View style={styles.innerShadow}>
@@ -253,8 +230,14 @@ const InventoryModal = ({
             </View>
         </View>
     </Modal>
+
     );
 };
+
+
+
+
+
 
 export default InventoryModal;
 

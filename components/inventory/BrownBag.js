@@ -6,8 +6,6 @@ import evolutionData from '../../context/evolutionData';
 import InventoryModal from './InventoryModal';
 import { styles } from '../../styles/styles';
 
-
-
 const BrownBag = () => {
     // Use AppContext to access global state and the dispatch function.
     const { state, dispatch } = useContext(AppContext);
@@ -19,14 +17,7 @@ const BrownBag = () => {
     const isInventoryOpen = state.isInventoryOpen;
     const totalTime = state.totalTime;
 
-    //const { activeTab } = state;
-    const {string} = state;
-    const {activeTab } = state;
-    console.log(string + ' does this work')
-    
-    console.log('this is active tab type: ', typeof activeTab)
-
-    
+    const {activeTab} = state;
 
     // Define local component states for inventory modal visibility and selected fruit properties.
     const [selectedFruit, setSelectedFruit] = useState(null);
@@ -37,10 +28,6 @@ const BrownBag = () => {
 
     const selectedFruitId = state.selectedFruitId;
     const selectedPetId = state.selectedPetId;
-
-    //const [activeTab, setActiveTab] = useState('Fruits');
-    //const activeTab = 'Fruits';
-    console.log("Active Tab in BrownBag:", activeTab);
 
     const [isEvolutionModalVisible, setEvolutionModalVisible] = useState(false);
     
@@ -277,19 +264,18 @@ const BrownBag = () => {
                     </View>
                 </View>
             </Modal>
-
             */}
 
             <InventoryModal
                 isInventoryOpen={isInventoryOpen} // Replace with your state or prop
-                teststring={activeTab}
                 activeTab={activeTab}
                 inventory={inventory} // Replace with your state or prop
-                petInventory={pet_inventory} // Replace with your state or prop
+                pet_inventory={pet_inventory} // Replace with your state or prop
                 selectedFruitId={selectedFruitId} // Replace with your state or prop
                 selectedPetId={selectedPetId} // Replace with your state or prop
                 dispatch={dispatch} // Replace with your dispatch function
                 totalTime = {totalTime}
+                setExpGif = {setExpGif}
             />
 
             {/* end of modal inventory */}

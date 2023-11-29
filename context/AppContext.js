@@ -12,8 +12,6 @@ const initialState = {
     selectedFruitId: null,
     selectedPetId: null,
     activeTab:'Fruits',
-    string: 'test string',
-
     inventory: [
         // Extra fruits only for debugging.
         { id: 1, name: 'blue_pineapple', image: require('../assets/fruits/blue_pineapple.png') }, //works 
@@ -181,9 +179,6 @@ const initialState = {
             expProgress: 0
         }
     ],
-
-
-
 };
 
 // A reducer function to update our state based on actions.
@@ -234,7 +229,7 @@ const reducer = (state, action) => {
             return {...state, selectedPetId: action.payload};
 
         case 'SET_INVENTORY_TAB':
-            return {activeTab: action.payload};
+            return {...state, activeTab: action.payload};
             
         
         default: 
