@@ -17,6 +17,7 @@ const InventoryModal = ({
     setSelectedPetId,
     dispatch,
     totalTime,
+    teststring,
 }) => {
     
     const {state} = useContext(AppContext);
@@ -33,6 +34,15 @@ const InventoryModal = ({
         return chunkedArr;
     };
 
+    console.log(teststring)
+    if(activeTab === undefined) {return console.log('loading')}
+
+    //const activeTab = 'Fruits';
+    console.log('THIS IS TYPE OF ', typeof activeTab);
+
+    
+
+   // const {activeTab} = state;
     const renderInventoryItems = (items, setSelectedId) => {
         return items.map((itemRow, rowIndex) => (
             <View key={rowIndex} style={styles.inventoryRow}>
@@ -148,7 +158,8 @@ const InventoryModal = ({
                     style={[styles.tab, activeTab === 'Fruits' && styles.activeTab]}
                     // Change to dispatch here
                     //onPress={() => setActiveTab('Fruits')}>
-                onPress={() => dispatch({ type: 'SET_INVENTORY_TAB', payload: 'Fruits'})}>
+                //onPress={() => dispatch({ type: 'SET_INVENTORY_TAB', payload: 'Fruits' })}>
+                >
                     {console.log(activeTab)}
                     <Text> Fruits </Text>
                 </TouchableOpacity>
@@ -157,7 +168,8 @@ const InventoryModal = ({
                     // Change to dispatch here
 
                     //onPress={() => setActiveTab('Pets')}
-                    onPress={() => dispatch({ type: 'SET_INVENTORY_TAB', payload: 'Pets'})}>
+                    //onPress={() => dispatch({ type: 'SET_INVENTORY_TAB', payload: 'Pets'})}>
+                    >
                     {console.log(activeTab)}
                     <Text> Pets </Text>
                 </TouchableOpacity>
@@ -245,3 +257,5 @@ const InventoryModal = ({
 };
 
 export default InventoryModal;
+
+// activeTab somehow being converted to an undefined value instead of remaining a string. 

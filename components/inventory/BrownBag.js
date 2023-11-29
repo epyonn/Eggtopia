@@ -1,10 +1,12 @@
 import React, {useState, useContext, useEffect} from 'react';
 import { AppContext } from '../../context/AppContext';
-import { Image, Modal, StyleSheet, TouchableOpacity, View, Text , Animated, ScrollView} from 'react-native';
+import { Image, Modal, TouchableOpacity, View, Text , Animated} from 'react-native';
 import Sound from 'react-native-sound';
 import evolutionData from '../../context/evolutionData';
 import InventoryModal from './InventoryModal';
 import { styles } from '../../styles/styles';
+
+
 
 const BrownBag = () => {
     // Use AppContext to access global state and the dispatch function.
@@ -15,7 +17,16 @@ const BrownBag = () => {
     const egg_inventory = state.egg_inventory;
     const gifOpacity = useState(new Animated.Value(0))[0];
     const isInventoryOpen = state.isInventoryOpen;
-    const totalTime = state.totalTimel
+    const totalTime = state.totalTime;
+
+    //const { activeTab } = state;
+    const {string} = state;
+    const {activeTab } = state;
+    console.log(string + ' does this work')
+    
+    console.log('this is active tab type: ', typeof activeTab)
+
+    
 
     // Define local component states for inventory modal visibility and selected fruit properties.
     const [selectedFruit, setSelectedFruit] = useState(null);
@@ -28,7 +39,8 @@ const BrownBag = () => {
     const selectedPetId = state.selectedPetId;
 
     //const [activeTab, setActiveTab] = useState('Fruits');
-    const activeTab = state.activeTab;
+    //const activeTab = 'Fruits';
+    console.log("Active Tab in BrownBag:", activeTab);
 
     const [isEvolutionModalVisible, setEvolutionModalVisible] = useState(false);
     
@@ -270,9 +282,8 @@ const BrownBag = () => {
 
             <InventoryModal
                 isInventoryOpen={isInventoryOpen} // Replace with your state or prop
-
-                activeTab = {activeTab}
-                //setActiveTab={setActiveTab} // Replace with your function
+                teststring={activeTab}
+                activeTab={activeTab}
                 inventory={inventory} // Replace with your state or prop
                 petInventory={pet_inventory} // Replace with your state or prop
                 selectedFruitId={selectedFruitId} // Replace with your state or prop

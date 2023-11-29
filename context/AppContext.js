@@ -11,7 +11,8 @@ const initialState = {
     expProgress: 0,
     selectedFruitId: null,
     selectedPetId: null,
-    activeTab: 'Fruits',
+    activeTab:'Fruits',
+    string: 'test string',
 
     inventory: [
         // Extra fruits only for debugging.
@@ -233,7 +234,8 @@ const reducer = (state, action) => {
             return {...state, selectedPetId: action.payload};
 
         case 'SET_INVENTORY_TAB':
-            return {...state, activeTab: action.payload};
+            return {activeTab: action.payload};
+            
         
         default: 
             return state;
