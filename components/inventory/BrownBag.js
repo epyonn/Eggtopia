@@ -16,19 +16,12 @@ const BrownBag = () => {
     const gifOpacity = useState(new Animated.Value(0))[0];
     const isInventoryOpen = state.isInventoryOpen;
     const totalTime = state.totalTime;
-
     const {activeTab} = state;
 
     // Define local component states for inventory modal visibility and selected fruit properties.
     const [selectedFruit, setSelectedFruit] = useState(null);
-
-    // Use redux for selected fruit and pet id
-    //const [selectedFruitId, setSelectedFruitId] = useState(null);
-    //const [selectedPetId, setSelectedPetId] = useState(null);
-
     const selectedFruitId = state.selectedFruitId;
     const selectedPetId = state.selectedPetId;
-
     const [isEvolutionModalVisible, setEvolutionModalVisible] = useState(false);
     
     // Sounds and Exp Gif
@@ -69,19 +62,14 @@ const BrownBag = () => {
                 }
                 return item;  // returning the item unchanged if the condition isn't met
             });
-            dispatch({ type: 'SET_INVENTORY', payload: updatedInventory}); 
-            // Reset selected fruit states and close the inventory
 
-            // change useState hooks to reference Redux data
-            //setSelectedFruitId(null);
-            //setSelectedPetId(null);
-            
+            dispatch({ type: 'SET_INVENTORY', payload: updatedInventory}); 
             dispatch({ type: 'SET_FRUIT_ID', payload: null});
             dispatch({ type: 'SET_PET_ID', payload: null});
             
             // Close inventory
             dispatch({ type: 'SET_INVENTORY_OPEN', payload: false});
-            //setInventory(false);
+
         } else if (activeTab === 'Pets') {
             setSelectedFruitId(null);
             // Pet that will be added to the main screen based on Id chosen
@@ -154,7 +142,6 @@ const BrownBag = () => {
     // Component JSX rendering logic.
     return (
         <View style={styles.container}>
-            {/* EXP GIF */}
             {
                 expGif &&
                 <Image
@@ -162,153 +149,51 @@ const BrownBag = () => {
                 style={styles.expGif}
                 />
             }
-
+            
             <TouchableOpacity onPress={() => dispatch({ type: 'SET_INVENTORY_OPEN', payload: true}, console.log('pressed ' + isInventoryOpen))}>
                 <Image source={require('../../assets/bag/brownbag7.png')} style={styles.brownBag} />
             </TouchableOpacity>
-            
-            {/* Modal Inventory Start */}
-            {/* 
-
-            <Modal
-                animationType='slide'
-                transparent={true}
-                visible={isInventoryOpen}
-                onRequestClose={() => dispatch({ type: 'SET_INVENTORY_OPEN', payload: false})}
-            >
-                <View style={styles.centeredView}>
-                    <View style={styles.modalView}>
-                    <View style={styles.tabs}>
-                        <TouchableOpacity 
-                            style={[styles.tab, activeTab === 'Fruits' && styles.activeTab]}
-                            onPress={() => setActiveTab('Fruits')}>
-                            <Text> Fruits </Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity 
-                            style={[styles.tab, activeTab === 'Pets' && styles.activeTab]}
-                            onPress={() => setActiveTab('Pets')}>
-                            <Text> Pets </Text>
-                        </TouchableOpacity>
-                </View>
-                    <View style={styles.inventoryItems}>
-                        <ScrollView>
-                        {chunkArray([...(activeTab === 'Fruits' ? inventory : pet_inventory)], 4).map((row, rowIndex) => ( 
-                            //<View key={rowIndex} style={styles.inventoryRow}> 
-                            <View key={`${activeTab}-${rowIndex}`} style={styles.inventoryRow}>
-                                {row.map((slot, index) => (
-                                    <TouchableOpacity
-                                        key={index}
-                                        style={[
-                                            styles.inventoryFruit,
-                                            selectedFruitId === slot.id && styles.selectedItem || selectedPetId === slot.id && styles.selectedItem
-                                        ]}
-                                        onPress={() => {
-                                            if (slot.name) {
-                                                if (activeTab === 'Fruits') {
-                                                    setSelectedFruitId(slot.id);
-                                                } 
-                                                if (activeTab === 'Pets') {
-                                                    setSelectedPetId(slot.id)
-                                                }
-                                                
-                                            } else {
-                                                setSelectedFruitId(null);
-                                                setSelectedPetId(null)
-                                            }
-                                        }}>
-                                        <View style={styles.innerShadow}>
-                                            {slot.image && <Image source={slot.image} style={styles.inventoryImage}/>}
-                                        </View>
-                                    </TouchableOpacity>
-                                ))}
-                            </View>
-                        ))}
-                        </ScrollView>
-                        <View style={styles.buttonRow}>
-                            <TouchableOpacity
-                                style={styles.inventoryButton}
-                                onPress={useItem}
-                            >
-                                <Text style={styles.inventoryButtonText}> Use </Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                                style={styles.inventoryButton}
-                                onPress={() => {    
-                                    setSelectedFruit(null);
-                                    setSelectedPetId(null);
-                                    dispatch({ type: 'SET_INVENTORY_OPEN', payload: false});
-                                }}
-                            >
-                                <Text style={styles.inventoryButtonText}>Close</Text>
-                            </TouchableOpacity>
-                            <View
-                                style={styles.timeContainer}
-                            >   
-                                <View
-                                    style={styles.timeLabel}
-                                >
-                                    <Text
-                                        style={styles.labelText}
-                                    >
-                                        Total Time:  
-                                    </Text>
-                                </View>
-                                <Text
-                                    style={styles.timerText}
-                                >
-                                    {`${Math.floor(totalTime / 60).toString().padStart(2, '0')}:${(totalTime % 60).toString().padStart(2, '0')}`}
-                                </Text>
-                            </View>
-                        </View>
-                    </View>
-                    </View>
-                </View>
-            </Modal>
-            */}
-
+    
             <InventoryModal
-                isInventoryOpen={isInventoryOpen} // Replace with your state or prop
+                isInventoryOpen={isInventoryOpen} 
                 activeTab={activeTab}
-                inventory={inventory} // Replace with your state or prop
-                pet_inventory={pet_inventory} // Replace with your state or prop
-                selectedFruitId={selectedFruitId} // Replace with your state or prop
-                selectedPetId={selectedPetId} // Replace with your state or prop
-                dispatch={dispatch} // Replace with your dispatch function
+                inventory={inventory} 
+                pet_inventory={pet_inventory} 
+                selectedFruitId={selectedFruitId}
+                selectedPetId={selectedPetId} 
+                dispatch={dispatch} 
                 totalTime = {totalTime}
                 setExpGif = {setExpGif}
             />
-
-            {/* end of modal inventory */}
-
-                <Modal
-                    animationType='slide'
-                    transparent={true}
-                    visible={isEvolutionModalVisible}
-                    onRequestClose={() => setEvolutionModalVisible(false)}
-                >
-                <View style={styles.centeredView}>
-                    <View style={styles.modalView}>
-                        <View style={styles.evolutionContainer}>
-                            <Animated.Image 
-                                source={selectedPet.image} 
-                                style={[styles.evolutionImage, {opacity: Animated.subtract(1, gifOpacity)}]}
-                            />
-                            <Animated.Image 
-                                source={evolutionData.get(selectedPet.pet)?.get(selectedPet.evolution + 1)?.image || selectedPet.image} 
-                                style={[styles.evolutionImage, {opacity: gifOpacity}]}
-                            />
-                            <Text style={styles.evolutionText}>Your pet has evolved!</Text>
-                        </View>
-                        <TouchableOpacity 
-                            style={styles.evolutionButton} 
-                            onPress={() => setEvolutionModalVisible(false)}
-                        >
-                            <Text style={styles.inventoryButtonText}>Close</Text>
-                        </TouchableOpacity>
+            <Modal
+                animationType='slide'
+                transparent={true}
+                visible={isEvolutionModalVisible}
+                onRequestClose={() => setEvolutionModalVisible(false)}
+            >
+            <View style={styles.centeredView}>
+                <View style={styles.modalView}>
+                    <View style={styles.evolutionContainer}>
+                        <Animated.Image 
+                            source={selectedPet.image} 
+                            style={[styles.evolutionImage, {opacity: Animated.subtract(1, gifOpacity)}]}
+                        />
+                        <Animated.Image 
+                            source={evolutionData.get(selectedPet.pet)?.get(selectedPet.evolution + 1)?.image || selectedPet.image} 
+                            style={[styles.evolutionImage, {opacity: gifOpacity}]}
+                        />
+                        <Text style={styles.evolutionText}>Your pet has evolved!</Text>
                     </View>
+                    <TouchableOpacity 
+                        style={styles.evolutionButton} 
+                        onPress={() => setEvolutionModalVisible(false)}
+                    >
+                        <Text style={styles.inventoryButtonText}>Close</Text>
+                    </TouchableOpacity>
                 </View>
-                </Modal>
             </View>
+            </Modal>
+        </View>
     );
 };
 

@@ -19,7 +19,6 @@ export const styles = StyleSheet.create({
         //height: '100%',
         height: '100%',
     },
-
     container: {
         width: 100,
         height: 100,
@@ -234,6 +233,35 @@ export const styles = StyleSheet.create({
         position: "absolute",
         alignSelf: "center", 
         transform: [{ translateY: 140}, {translateX: 150}],
-        zIndex: -1 // Adj
-      }
+        zIndex: -1 
+      },
+          centeredViewTreasureChest: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 20,
+        borderWidth: 3,
+    },
+    modalViewTreasureChest: {
+        margin: 5,
+        backgroundColor: "white",
+        borderRadius: 20,
+        padding: 20,
+        alignItems: "center",
+        borderWidth: 3,
+    },
+    treasureImage: {
+        height: 125,
+        width: 125,
+    },
+    closeButtonTreasureChest: {
+        marginTop: 10,
+        padding: 5,
+        backgroundColor: '#2196F3',
+        borderRadius: 5,
+    },
+    closeButtonTextTreasureChest: {
+        color: 'white',
+        fontWeight: 'bold',
+    }
 });

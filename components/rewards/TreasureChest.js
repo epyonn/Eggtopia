@@ -1,46 +1,45 @@
 import React, {useState, useEffect, useContext} from 'react';
-import { AppContext } from '../context/AppContext'
+import { AppContext } from '../../context/AppContext'
 import {Modal, View, Image, StyleSheet, TouchableOpacity, Text} from 'react-native';
+import { styles } from '../../styles/styles.js';
 
 const TreasureChest = ({ isVisible, onClose }) => { //State being passed in from parent component.
-    const [imageSource, setImageSource] = useState(require('../assets/treasureChest/treasure_chest.gif'));
+    const [imageSource, setImageSource] = useState(require('../../assets/treasureChest/treasure_chest.gif'));
     const {state, dispatch} = useContext(AppContext);
     const inventory = state.inventory;
     const egg_inventory = state.egg_inventory;
 
     const genRandomKey = () => {
         const randomKey = Math.floor(Math.random() * 10000);
-        //console.log('generated key', randomKey)
         return randomKey;
     }
 
     const getRandomFruit = () => {
         const randomIndex = Math.floor(Math.random() * rewards.length);
-        console.log("this is the random index" + randomIndex);
         return rewards[randomIndex];
     };
 
     // Array of fruit images.
     const rewards = [
-        { name: 'blue_pineapple', image: require('../assets/fruits/blue_pineapple.png')}, 
-        { name: 'fire_peach', image: require('../assets/fruits/fire_peach.png') },
-        { name: 'fruit_group', image: require('../assets/fruits/fruit_group.png') },
-        { name: 'ice_pineapple', image: require('../assets/fruits/ice_pineapple.png') },
-        { name: 'green_mango', image: require('../assets/fruits/green_mango.png') },
-        { name: 'mangosteen', image: require('../assets/fruits/mangosteen.png') },
-        { name: 'pear', image: require('../assets/fruits/pear.png') },
-        { name: 'rainbow_pineapple', image: require('../assets/fruits/rainbow_pineapple.png')},
-        { name: 'pineapple', image: require('../assets/fruits/pineapple.png')},
-        { name: 'artichoke', image: require('../assets/fruits/artichoke.png')},
-        { name: 'strawberry', image: require('../assets/fruits/water_strawberry.png')},
-        { name: 'earth_apple', image: require('../assets/fruits/earth_apple.png')},
+        { name: 'blue_pineapple', image: require('../../assets/fruits/blue_pineapple.png')}, 
+        { name: 'fire_peach', image: require('../../assets/fruits/fire_peach.png') },
+        { name: 'fruit_group', image: require('../../assets/fruits/fruit_group.png') },
+        { name: 'ice_pineapple', image: require('../../assets/fruits/ice_pineapple.png') },
+        { name: 'green_mango', image: require('../../assets/fruits/green_mango.png') },
+        { name: 'mangosteen', image: require('../../assets/fruits/mangosteen.png') },
+        { name: 'pear', image: require('../../assets/fruits/pear.png') },
+        { name: 'rainbow_pineapple', image: require('../../assets/fruits/rainbow_pineapple.png')},
+        { name: 'pineapple', image: require('../../assets/fruits/pineapple.png')},
+        { name: 'artichoke', image: require('../../assets/fruits/artichoke.png')},
+        { name: 'strawberry', image: require('../../assets/fruits/water_strawberry.png')},
+        { name: 'earth_apple', image: require('../../assets/fruits/earth_apple.png')},
         {   
             id: genRandomKey(), 
             type: 'egg',
             pet: 'dragon',
             evolution: 0,
-            image: require('../assets/dragon/egg/egg-idle.gif'), 
-            walking_image: require('../assets/dragon/egg/egg-idle.gif'),
+            image: require('../../assets/dragon/egg/egg-idle.gif'), 
+            walking_image: require('../../assets/dragon/egg/egg-idle.gif'),
             name: "dragon_egg",
             expProgress: 0,
         },
@@ -49,8 +48,8 @@ const TreasureChest = ({ isVisible, onClose }) => { //State being passed in from
             type: 'egg',
             pet: 'bird',
             evolution: 0,
-            image: require('../assets/bird/egg/egg-idle.gif'), 
-            walking_image: require('../assets/bird/egg/egg-idle.gif'),
+            image: require('../../assets/bird/egg/egg-idle.gif'), 
+            walking_image: require('../../assets/bird/egg/egg-idle.gif'),
             name: "bird_egg",
             expProgress: 0,
         },
@@ -59,8 +58,8 @@ const TreasureChest = ({ isVisible, onClose }) => { //State being passed in from
             type: 'egg',
             pet: 'wolf',
             evolution: 0,
-            image: require('../assets/wolf/egg/egg-idle.gif'), 
-            walking_image: require('../assets/wolf/egg/egg-idle.gif'),
+            image: require('../../assets/wolf/egg/egg-idle.gif'), 
+            walking_image: require('../../assets/wolf/egg/egg-idle.gif'),
             name: "wolf_egg",
             expProgress: 0,
         }
@@ -128,7 +127,7 @@ const TreasureChest = ({ isVisible, onClose }) => { //State being passed in from
             return () => clearTimeout(timer);  // Clear the timer to prevent it from running if the effect is cleaned up.
         } else {
             // If the modal is not visible, reset the image to show the closed treasure chest.
-            setImageSource(require('../assets/treasureChest/treasure_chest.gif')); 
+            setImageSource(require('../../assets/treasureChest/treasure_chest.gif')); 
         }
     }, [isVisible]);  // This effect depends on the 'isVisible' prop. It will run every time 'isVisible' changes.
     
@@ -139,54 +138,22 @@ const TreasureChest = ({ isVisible, onClose }) => { //State being passed in from
             visible={isVisible}
             onRequestClose={onClose}
         >
-            <View style={styles.centeredView}>
-                <View style={styles.modalView}>
+            <View style={styles.centeredViewTreasureChest}>
+                <View style={styles.modalViewTreasureChest}>
                     <Image
                         source={imageSource}
                         style={styles.treasureImage}
                     />
                     <TouchableOpacity
-                        style={styles.closeButton}
+                        style={styles.closeButtonTreasureChest}
                         onPress={onClose}
                     >
-                        <Text style={styles.closeButtonText}> Close </Text>
+                        <Text style={styles.closeButtonTextTreasureChest}> Close </Text>
                     </TouchableOpacity>
                 </View>
             </View>
         </Modal>
     )
 }
-
-const styles = StyleSheet.create({
-    centeredView: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginTop: 20,
-        borderWidth: 3,
-    },
-    modalView: {
-        margin: 5,
-        backgroundColor: "white",
-        borderRadius: 20,
-        padding: 20,
-        alignItems: "center",
-        borderWidth: 3,
-    },
-    treasureImage: {
-        height: 125,
-        width: 125,
-    },
-    closeButton: {
-        marginTop: 10,
-        padding: 5,
-        backgroundColor: '#2196F3',
-        borderRadius: 5,
-    },
-    closeButtonText: {
-        color: 'white',
-        fontWeight: 'bold',
-    }
-})
 
 export default TreasureChest;

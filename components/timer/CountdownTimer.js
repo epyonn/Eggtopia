@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
 import { AppContext } from '../../context/AppContext';
 import { View, Text, TouchableOpacity, StyleSheet, Image, Modal } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
-import TreasureChest from '../TreasureChest';
+import TreasureChest from '../rewards/TreasureChest';
 import TimerDisplay from './TimerDisplay';
 import PetImage from './PetImage';
 import TimePickerModal from './TimePickerModal';
@@ -11,9 +10,8 @@ import ResetButton from './ResetButton';
 const CountdownTimer = ({ initialHours = 0, initialMinutes = 0, initialSeconds = 0 }) => {
     // useContext hook to access the global state and dispatch function
     const { state, dispatch } = useContext(AppContext);
-    // Constant for experience increment value
-    const expIncrement = 0.03;
     const selected_pet = state.selected_pet[0];
+
     // Check if selected_pet exists before accessing its properties
     const idleImage = selected_pet ? selected_pet.image : null;
     const walkingImage = selected_pet ? selected_pet.walking_image : null;
@@ -44,7 +42,6 @@ const CountdownTimer = ({ initialHours = 0, initialMinutes = 0, initialSeconds =
     const [isManuallyFinished, setIsManuallyFinished] = useState(false);
     const [startHours, setStartHours] = useState(initialHours);
     const [startMinutes, setStartMinutes] = useState(initialMinutes);
-    const [totalTime, setTotalTime] = useState(0);
 
     // Function to reset the timer to default values
     const resetTimer = () => {
@@ -80,16 +77,44 @@ const CountdownTimer = ({ initialHours = 0, initialMinutes = 0, initialSeconds =
                     if (hours === 0) {
                         // Logic to handle what happens when the timer reaches zero
                         if (!wasReset.current && !isManuallyFinished) {
-                            dispatch({
-                                type: 'INCREMENT_EXP',
-                                payload: Math.min(state.expProgress + expIncrement, 1)
-                            });
+                          
                             dispatch({ type: "SET_INVENTORY_OPEN", payload: false})
                             setShowTreasureChest(true);
-
+                            console.log('this is total time before addition', state.totalTime);
                             const totalTimeInMinutes = (startHours * 60) + startMinutes;
-                            let updatedTotalMinutes = state.totalTime + totalTimeInMinutes;
+                            let updatedTotalMinutes = totalTimeInMinutes;
                             dispatch({ type:'SET_TOTAL_TIME', payload: updatedTotalMinutes})
+
+                            const thresholds = new Map([
+                              [15, 0.03],
+                              [30, 0.06],
+                              [45, 0.09],
+                              [60, 0.12],
+                              [75, 0.15],
+                              [100, 0.18],
+                              [115, 0.21],
+                              [130, 0.24]
+                            ]);
+
+                            let expIncrement = 0.0;
+
+                            const updateExpIncrement = (updatedTotalMinutes) => {
+                              for (let [minutes, increment] of thresholds) {
+                                if (updatedTotalMinutes < minutes) {
+                                  expIncrement = increment;
+                                  break;
+                                }
+                              }
+                            }
+
+                            updateExpIncrement(updatedTotalMinutes);
+
+                            dispatch({
+                              type: 'INCREMENT_EXP',
+                              payload: Math.min(state.expProgress + expIncrement, 1)
+                            });
+
+                            console.log('this is total time after addition', state.totalTime)
                         }
                         setIsManuallyFinished(false); // Reset the manual finish flag
                         clearInterval(myInterval);  // Stop the timer

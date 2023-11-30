@@ -1,10 +1,9 @@
 // InventoryModal.js
-import React, {useState, useContext} from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 import { Image, Modal, StyleSheet, TouchableOpacity, View, Text , Animated, ScrollView} from 'react-native';
 import { AppContext } from '../../context/AppContext';
 import { styles } from '../../styles/styles';
 import Sound from 'react-native-sound';
-
 
 const InventoryModal = ({
     isInventoryOpen,
@@ -20,8 +19,8 @@ const InventoryModal = ({
 }) => {
     const { state } = useContext(AppContext);
     const selectedPet = state.selected_pet[0];
-
-    
+    const egg_inventory = state.egg_inventory;
+    const [fruitSound, setFruitSound] = useState(null);
 
     const chunkArray = (array, size) => {
         const chunkedArr = [];
@@ -33,29 +32,18 @@ const InventoryModal = ({
         return chunkedArr;
     };
 
-    const renderInventoryItems = (items, setSelectedId) => {
-        return items.map((itemRow, rowIndex) => (
-            <View key={rowIndex} style={styles.inventoryRow}>
-                {itemRow.map((item, index) => (
-                    <TouchableOpacity
-                        key={index}
-                        style={styles.inventoryItem}
-                        onPress={() => setSelectedId(item.id)}
-                    >
-                        {/* Render item image and other properties here */}
-                    </TouchableOpacity>
-                ))}
-            </View>
-        ));
-    };
-
-    // Sounds and Exp Gif
-    const fruitSound = new Sound(require('../../assets/sounds/munching-food.mp3'), (error) => {
-        if (error) {
-            console.log('failed to load the sound new update', error);
-            return;
+    useEffect(() => {
+        const sound = new Sound(require('../../assets/sounds/munching-food.mp3'), (error) => {
+            if (error) {
+                console.log('failed to load the sound', error);
+                return;
+            }
+            setFruitSound(sound);
+        });
+        return () => {
+            fruitSound.release();
         }
-    });
+    }, []);
 
     const useItem = () => {
         if (activeTab === 'Fruits') {
@@ -109,7 +97,8 @@ const InventoryModal = ({
                     const updatedPetInventory = pet_inventory.filter(pet => pet.id !== selectedPetId);
                     updatedPetInventory.push({id: Math.max(...updatedPetInventory.map(item => item.id)) + 1});
                     dispatch({ type: 'SET_PET_INVENTORY', payload: updatedPetInventory })
-                    setSelectedPetId(null);
+                    //setSelectedPetId(null);
+                    dispatch({ type: 'SET_PET_ID', payload: null });
                     // Use dispatch instead of setter functions.
                     dispatch({type: 'SET_INVENTORY_OPEN', payload: false});
                 } else {
@@ -127,27 +116,32 @@ const InventoryModal = ({
     };
 
     return (
-
-
         <Modal
             animationType='slide'
             transparent={true}
             visible={isInventoryOpen}
             onRequestClose={() => dispatch({ type: 'SET_INVENTORY_OPEN', payload: false})}
         >
-
-
         <View style={styles.centeredView}>
             <View style={styles.modalView}>
             <View style={styles.tabs}>
                 <TouchableOpacity 
                     style={[styles.tab, activeTab === 'Fruits' && styles.activeTab]}
-                    onPress={() => dispatch({ type: 'SET_INVENTORY_TAB', payload: 'Fruits' })}>
+                    onPress={() => {
+                        dispatch({ type: 'SET_INVENTORY_TAB', payload: 'Fruits' })
+                        dispatch({ type: 'SET_PET_ID', payload: null})
+                        dispatch({ type: 'SET_FRUIT_ID', payload: null})
+
+                    }}>
                     <Text> Fruits </Text>
                 </TouchableOpacity>
                 <TouchableOpacity 
                     style={[styles.tab, activeTab === 'Pets' && styles.activeTab]}
-                    onPress={() => dispatch({ type: 'SET_INVENTORY_TAB', payload: 'Pets'})}>
+                    onPress={() => {
+                        dispatch({ type: 'SET_INVENTORY_TAB', payload: 'Pets'})
+                        dispatch({ type: 'SET_PET_ID', payload: null})
+                        dispatch({ type: 'SET_FRUIT_ID', payload: null})
+                    }}>
                     <Text> Pets </Text>
                 </TouchableOpacity>
         </View>
@@ -165,19 +159,14 @@ const InventoryModal = ({
                                 onPress={() => {
                                     if (slot.name) {
                                         if (activeTab === 'Fruits') {
-                                           // setSelectedFruitId(slot.id);
                                             dispatch({ type: 'SET_FRUIT_ID', payload: slot.id})
-
                                         } 
                                         if (activeTab === 'Pets') {
-                                            //setSelectedPetId(slot.id)
+
                                             dispatch({ type: 'SET_PET_ID', payload: slot.id})
                                         }
                                         
                                     } else {
-                                        //setSelectedFruitId(null);
-                                        //setSelectedPetId(null)
-
                                         dispatch({ type: 'SET_FRUIT_ID', payload: null})
                                         dispatch({ type: 'SET_PET_ID', payload: null})
                                     }
@@ -221,7 +210,8 @@ const InventoryModal = ({
                         </View>
                         <Text
                             style={styles.timerText}
-                        >
+                        >   
+                            
                             {`${Math.floor(totalTime / 60).toString().padStart(2, '0')}:${(totalTime % 60).toString().padStart(2, '0')}`}
                         </Text>
                     </View>

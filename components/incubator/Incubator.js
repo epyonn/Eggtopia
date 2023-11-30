@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { AppContext } from '../context/AppContext';
+import { AppContext } from '../../context/AppContext';
 import { Image, TouchableOpacity, View, StyleSheet, Modal, Text, ScrollView } from 'react-native';
 
 const Incubator = () => {
@@ -50,7 +50,7 @@ const Incubator = () => {
     return (
         <View style={styles.container}>
             <TouchableOpacity onPress={() => setIncubator(true)}>
-                <Image source={require('../assets/incubator/egg_incubator.png')} style={styles.incubator} />
+                <Image source={require('../../assets/incubator/egg_incubator.png')} style={styles.incubator} />
             </TouchableOpacity>
             <Modal
                 animationType="slide"
@@ -87,7 +87,10 @@ const Incubator = () => {
                                 <TouchableOpacity style={styles.eggButton} onPress={useItem}>
                                     <Text style={styles.eggButtonText}>Select</Text>
                                 </TouchableOpacity>
-                                <TouchableOpacity style={styles.eggButton} onPress={() => setIncubator(false)}>
+                                <TouchableOpacity style={styles.eggButton} onPress={() => {
+                                    setIncubator(false)
+                                    setSelectedEggId(null)
+                                    }}>
                                     <Text style={styles.eggButtonText}>Close</Text>
                                 </TouchableOpacity>
                             </View>
