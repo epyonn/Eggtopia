@@ -9,6 +9,9 @@ const Analytics = () => {
     const [displayModal, setModal] = useState(false);
 
     return (   
+        <div>
+            
+        </div>
     
 
     )

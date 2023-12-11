@@ -7,6 +7,8 @@ export const AppContext = createContext();
 
 const initialState = {
     isInventoryOpen: false,
+
+    // Need to add dates to track total time and date.
     totalTime: 0,
     expProgress: 0,
     selectedFruitId: null,
