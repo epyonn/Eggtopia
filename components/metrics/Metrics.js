@@ -10,6 +10,7 @@ import { styles } from '../../styles/styles';
 const Metrics = () => {
     const { state, dispatch } = useContext(AppContext);
     const isMetricsOpen = state.isMetricsOpen;
+    const metrics = state.metrics;
 
 
     const TableRow = ({ date, minutes }) => (
@@ -17,18 +18,33 @@ const Metrics = () => {
           <Text style={styles.tableCell}>{date}</Text>
           <Text style={styles.tableCell}>{minutes}</Text>
         </View>
-      );
+    );
 
-      const focusData = [
-        { date: "2023-03-01", minutes: 120 },
-        { date: "2023-03-02", minutes: 150 },
-        { date: "2023-03-03", minutes: 90 },
-        { date: "2023-03-04", minutes: 100 },
-        { date: "2023-03-05", minutes: 110 },
-        { date: "2023-03-06", minutes: 95 },
+    const focusData = [
+    { date: "2023-03-01", minutes: 120 },
+    { date: "2023-03-02", minutes: 150 },
+    { date: "2023-03-03", minutes: 90 },
+    { date: "2023-03-04", minutes: 100 },
+    { date: "2023-03-05", minutes: 110 },
+    { date: "2023-03-06", minutes: 95 },
 
-      ];
-      
+    ];
+    
+    const filteredMetrics = metrics.reduce((result, metric) => {
+        const parts = metric.date.split("-");
+        const formattedDate = new Date(parts[2], parts[0] - 1, parts[1]);
+        const date = formattedDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
+        const existingMetric = result.find(item => item.date === date);
+
+        if (existingMetric) {
+            existingMetric.minutes += metric.minutes;
+        } else {
+            result.push({ date: date, minutes: metric.minutes });
+        }
+
+        return result;
+    }, []);
 
     return (
         <Modal
@@ -40,7 +56,7 @@ const Metrics = () => {
         <View style={styles.centeredView}>
             <View style={styles.metricsView}>
             <View>
-                <Image source={require('../../assets/metrics/sun.png')} style={{ width: 50, height: 100, margin: 0, position: 'absolute', top: -25, left: 30 }} />
+                <Image source={require('../../assets/metrics/sun.png')} style={{ width: 50, height: 100, margin: 0, position: 'absolute', top: -23, left: 30 }} />
                 <Text style={{ fontSize: 18, textAlign: 'center', margin: 10, padding: 5, }}>
                     Daily Focus Time
                 </Text>
@@ -48,21 +64,25 @@ const Metrics = () => {
             </View>
 
 
-            <View>
+            <View style={styles.chart}>
                 <Chart />
             </View>
 
-            <View style={styles.tableContainer}>
-            <View style={styles.tableRow}>
-                <Text style={styles.tableCell}>Date</Text>
-                <Text style={styles.tableCell}>Minutes</Text>
-             </View>
+            <View style={{ elevation: 5 }}>
+                <View style={styles.tableContainer}>
+                    <View style={styles.tableRow}>
+                        <Text style={styles.tableCell}>Date</Text>
+                        <Text style={styles.tableCell}>Minutes</Text>
+                    </View>
 
-            <ScrollView>
-            {focusData.map((item, index) => (
-                <TableRow key={index} date={item.date} minutes={item.minutes} />
-            ))}
-            </ScrollView>
+                    <View style={styles.table}>
+                        <ScrollView>
+                            {filteredMetrics.map((item, index) => (
+                                <TableRow key={index} date={item.date} minutes={item.minutes} />
+                            ))}
+                        </ScrollView>
+                    </View>
+                </View>
             </View>
 
 

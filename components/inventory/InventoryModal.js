@@ -219,9 +219,11 @@ const InventoryModal = ({
                         
                         }}
                     >
-                    <Image source={require('../../assets/stopwatch/s2.png')} 
+                    <Image source={require('../../assets/stopwatch/s3.png')} 
                         style={styles.stopwatch}  
                     />
+
+
                     </TouchableOpacity>
 
                     {isMetricsOpen && (

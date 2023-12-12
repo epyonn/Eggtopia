@@ -100,7 +100,13 @@ const CountdownTimer = ({ initialHours = 0, initialMinutes = 0, initialSeconds =
                             console.log('this is the time', timeObject);
                             console.log('this is timeObject date', timeObject.date)
 
+                            let testObject = {
+                              date: '12-15-2023',
+                              minutes: +totalTimeInMinutes
+                            }
+
                             dispatch({ type: 'ADD_METRIC', payload: timeObject });
+                            dispatch({ type: 'ADD_METRIC', payload: testObject })
 
                             console.log('this is metrics inside countodnwtimer', metrics)
 

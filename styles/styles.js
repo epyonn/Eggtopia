@@ -299,13 +299,20 @@ export const styles = StyleSheet.create({
         
       },
       chart: {
-        borderRadius: 10,
-        overflow: 'hidden',
+
+        
       },
       tableContainer: {
         marginTop: 20,
         overflow: 'hidden',
         height: 150,
+        borderRadius: 10,
+   
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1, // Increase the shadow opacity value
+        shadowRadius: 3,
+        
       },
       tableRow: {
         flexDirection: 'row',
@@ -319,6 +326,23 @@ export const styles = StyleSheet.create({
         flex: 1,
         textAlign: 'center',
       },
+      table: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.0, // Increase the shadow opacity value
+        shadowRadius: 3,
+        
+      },
+      chart: {
+        marginTop: 5,
+        borderRadius: 10,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.15, // Increase the shadow opacity value
+        shadowRadius: 3,
+        paddingBottom: 0,
+      }
+
 });
 
 // After lunch plot data from graph. 
