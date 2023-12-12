@@ -7,7 +7,8 @@ export const AppContext = createContext();
 
 const initialState = {
     isInventoryOpen: false,
-
+    isMetricsOpen: false,
+    metrics: [],
     // Need to add dates to track total time and date.
     totalTime: 0,
     expProgress: 0,
@@ -224,6 +225,9 @@ const reducer = (state, action) => {
         case 'SET_INVENTORY_OPEN':
             return {...state, isInventoryOpen: action.payload};
 
+        case 'SET_METRICS_OPEN':
+            return {...state, isMetricsOpen: action.payload};
+
         case 'SET_FRUIT_ID':
             return {...state, selectedFruitId: action.payload};
         
@@ -232,6 +236,11 @@ const reducer = (state, action) => {
 
         case 'SET_INVENTORY_TAB':
             return {...state, activeTab: action.payload};
+        case 'ADD_METRIC':
+                return {
+                    ...state,
+                    metrics: [...state.metrics, action.payload],
+                }
             
         
         default: 

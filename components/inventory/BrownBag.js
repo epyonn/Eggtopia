@@ -4,6 +4,7 @@ import { Image, Modal, TouchableOpacity, View, Text , Animated} from 'react-nati
 import Sound from 'react-native-sound';
 import evolutionData from '../../context/evolutionData';
 import InventoryModal from './InventoryModal';
+
 import { styles } from '../../styles/styles';
 
 const BrownBag = () => {

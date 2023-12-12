@@ -4,6 +4,7 @@ import { Image, Modal, StyleSheet, TouchableOpacity, View, Text , Animated, Scro
 import { AppContext } from '../../context/AppContext';
 import { styles } from '../../styles/styles';
 import Sound from 'react-native-sound';
+import Metrics from '../metrics/Metrics';
 
 const InventoryModal = ({
     isInventoryOpen,
@@ -21,6 +22,7 @@ const InventoryModal = ({
     const selectedPet = state.selected_pet[0];
     const egg_inventory = state.egg_inventory;
     const [fruitSound, setFruitSound] = useState(null);
+    const isMetricsOpen = state.isMetricsOpen;
 
     const chunkArray = (array, size) => {
         const chunkedArr = [];
@@ -41,7 +43,10 @@ const InventoryModal = ({
             setFruitSound(sound);
         });
         return () => {
-            fruitSound.release();
+            if (fruitSound) {
+                fruitSound.release();
+            }
+
         }
     }, []);
 
@@ -146,7 +151,9 @@ const InventoryModal = ({
                 </TouchableOpacity>
         </View>
             <View style={styles.inventoryItems}>
-                <ScrollView>
+                <ScrollView
+                    style={styles.scrollview}
+                >
                 {chunkArray([...(activeTab === 'Fruits' ? inventory : pet_inventory)], 4).map((row, rowIndex) => ( 
                     <View key={`${activeTab}-${rowIndex}`} style={styles.inventoryRow}>
                         {row.map((slot, index) => (
@@ -179,7 +186,9 @@ const InventoryModal = ({
                     </View>
                 ))}
                 </ScrollView>
+
                 <View style={styles.buttonRow}>
+                    <View style={styles.buttons}>
                     <TouchableOpacity
                         style={styles.inventoryButton}
                         onPress={useItem}
@@ -196,6 +205,29 @@ const InventoryModal = ({
                     >
                         <Text style={styles.inventoryButtonText}>Close</Text>
                     </TouchableOpacity>
+                    </View>
+
+
+                    <TouchableOpacity
+                        style={styles.watch}
+                        onPress={() => {
+
+                            dispatch({ type: 'SET_METRICS_OPEN', payload: true});
+                            console.log('watch is pressed pressed')
+                            console.log(isMetricsOpen)
+
+                        
+                        }}
+                    >
+                    <Image source={require('../../assets/stopwatch/s2.png')} 
+                        style={styles.stopwatch}  
+                    />
+                    </TouchableOpacity>
+
+                    {isMetricsOpen && (
+                        <Metrics />
+                    )}
+                    
                     <View
                         style={styles.timeContainer}
                     >   
@@ -211,7 +243,7 @@ const InventoryModal = ({
                         <Text
                             style={styles.timerText}
                         >   
-                            
+
                             {`${Math.floor(totalTime / 60).toString().padStart(2, '0')}:${(totalTime % 60).toString().padStart(2, '0')}`}
                         </Text>
                     </View>

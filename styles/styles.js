@@ -25,6 +25,19 @@ export const styles = StyleSheet.create({
         justifyContent: 'flex-start',
         alignItems: 'flex-start',
       },
+      metricsView: {
+        margin: 20,
+        //backgroundColor: '#DBA463',
+        backgroundColor: '#F4D29C',
+        backgroundColor: 'white',
+        borderRadius: 20,
+        padding: 15,
+        borderWidth: 3,
+        height: '75%',
+        width: 375,
+        display: 'flex',
+        flexDirection: 'column',
+      },  
       brownBag: {
         width: 100,
         height: 100,
@@ -63,6 +76,7 @@ export const styles = StyleSheet.create({
         flexDirection: 'column',
         justifyContent: 'space-between',
         height: 430,
+        
     
       },
       inventoryRow: {
@@ -88,6 +102,7 @@ export const styles = StyleSheet.create({
             height: 3 
         },
         elevation: 2,
+        
       },
       inventorySlot: {
         width: 50,
@@ -118,27 +133,35 @@ export const styles = StyleSheet.create({
       },
       inventoryButton: {
         backgroundColor: "#2196F3",
-        borderRadius: 20,
-        padding: 8,
+        borderRadius: 15,
+        padding: 5,
         elevation: 2,
         marginTop: 15,
         alignSelf: 'center',
         marginRight: 5,
         //borderWidth: 1,
       },
+
       inventoryButtonText: {
         color: "white",
         fontWeight: "bold",
         textAlign: "center",
         
       },
+      buttons: {
+        display: 'flex',
+        flexDirection: 'row',
+        marginRight: 20,
+      },
+
       buttonRow: {
         dislay: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        
+        maxWidth: '100%',
       },
+
       tabs: {
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -204,7 +227,7 @@ export const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         marginTop: 15,
-        marginLeft: 5,
+        marginLeft: 15,
       },
       timeLabel: {
         fontSize: 20,
@@ -213,7 +236,7 @@ export const styles = StyleSheet.create({
         backgroundColor: "white",
         borderRadius: 5,
         paddingRight: 0,
-        paddingLeft: 5,
+        paddingLeft: 0,
         overflow: 'hidden',
         marginLeft: 5,
         backgroundColor: '#B0B0B0',
@@ -235,33 +258,67 @@ export const styles = StyleSheet.create({
         transform: [{ translateY: 140}, {translateX: 150}],
         zIndex: -1 
       },
-          centeredViewTreasureChest: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginTop: 20,
-        borderWidth: 3,
-    },
-    modalViewTreasureChest: {
+        centeredViewTreasureChest: {
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+          marginTop: 20,
+          borderWidth: 3,
+      },
+      modalViewTreasureChest: {
         margin: 5,
         backgroundColor: "white",
         borderRadius: 20,
         padding: 20,
         alignItems: "center",
         borderWidth: 3,
-    },
-    treasureImage: {
+      },
+      treasureImage: {
         height: 125,
         width: 125,
-    },
-    closeButtonTreasureChest: {
+      },
+      closeButtonTreasureChest: {
         marginTop: 10,
         padding: 5,
         backgroundColor: '#2196F3',
         borderRadius: 5,
-    },
-    closeButtonTextTreasureChest: {
+      },
+      closeButtonTextTreasureChest: {
         color: 'white',
         fontWeight: 'bold',
-    }
+      },
+      stopwatch: {
+        height: 60,
+        width: 60,
+      },
+      watch: {
+        position: 'absolute',
+        left: 90,
+        paddingTop: 4, 
+        zIndex: 1,
+        
+      },
+      chart: {
+        borderRadius: 10,
+        overflow: 'hidden',
+      },
+      tableContainer: {
+        marginTop: 20,
+        overflow: 'hidden',
+        height: 150,
+      },
+      tableRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: 10,
+        borderBottomWidth: 1,
+        borderBottomColor: '#ccc',
+      },
+      tableCell: {
+        flex: 1,
+        textAlign: 'center',
+      },
 });
+
+// After lunch plot data from graph. 

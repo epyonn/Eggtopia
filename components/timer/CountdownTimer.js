@@ -15,6 +15,7 @@ const CountdownTimer = ({ initialHours = 0, initialMinutes = 0, initialSeconds =
     // Check if selected_pet exists before accessing its properties
     const idleImage = selected_pet ? selected_pet.image : null;
     const walkingImage = selected_pet ? selected_pet.walking_image : null;
+    const metrics = state.metrics;
 
     // useState hooks to manage local state of hours, minutes, and seconds
     const [hours, setHours] = useState(initialHours);
@@ -84,6 +85,28 @@ const CountdownTimer = ({ initialHours = 0, initialMinutes = 0, initialSeconds =
                             const totalTimeInMinutes = (startHours * 60) + startMinutes;
                             let updatedTotalMinutes = totalTimeInMinutes;
                             dispatch({ type:'SET_TOTAL_TIME', payload: updatedTotalMinutes})
+
+                            const currentDate = new Date();
+                            const formattedDate = (currentDate.getMonth() + 1).toString().padStart(2, '0') + '-' 
+                                                + currentDate.getDate().toString().padStart(2, '0') + '-' 
+                                                + currentDate.getFullYear();
+                            console.log('this is current date string', formattedDate);
+
+                            let timeObject = {
+                              date: formattedDate,
+                              minutes: +totalTimeInMinutes // Convert string to a number
+                            }
+
+                            console.log('this is the time', timeObject);
+                            console.log('this is timeObject date', timeObject.date)
+
+                            dispatch({ type: 'ADD_METRIC', payload: timeObject });
+
+                            console.log('this is metrics inside countodnwtimer', metrics)
+
+                            //an object gets dispatched with time and date? 
+                            // then plot the array of objects
+                            // create variable for total time
 
                             const thresholds = new Map([
                               [15, 0.03],
