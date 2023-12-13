@@ -11,7 +11,8 @@ const Metrics = () => {
     const { state, dispatch } = useContext(AppContext);
     const isMetricsOpen = state.isMetricsOpen;
     const metrics = state.metrics;
-
+    const totalTime = state.totalTime;
+    const uniqueDates = [...new Set(metrics.map(metric => metric.date))];
 
     const TableRow = ({ date, minutes }) => (
         <View style={styles.tableRow}>
@@ -68,7 +69,7 @@ const Metrics = () => {
                 <Chart />
             </View>
 
-            <View style={{ elevation: 5 }}>
+
                 <View style={styles.tableContainer}>
                     <View style={styles.tableRow}>
                         <Text style={styles.tableCell}>Date</Text>
@@ -83,15 +84,22 @@ const Metrics = () => {
                         </ScrollView>
                     </View>
                 </View>
-            </View>
 
 
-            <TouchableOpacity
-                style={styles.inventoryButton}
-                onPress={() => dispatch({ type: 'SET_METRICS_OPEN', payload: false})}
-            >
-                <Text style={styles.inventoryButtonText}> Close </Text>
-            </TouchableOpacity>
+            <View style={styles.metricButtonContainer}>
+                
+                <View style={styles.averageContainer}>
+                    
+                    <Text> Minutes Per Day : {(totalTime/uniqueDates.length).toFixed(0)} </Text>
+                </View>
+               
+                <TouchableOpacity
+                    style={styles.metricButton}
+                    onPress={() => dispatch({ type: 'SET_METRICS_OPEN', payload: false})}
+                >
+                    <Text style={styles.inventoryButtonText}>Close</Text>
+                </TouchableOpacity>
+            </View>          
             
 
 

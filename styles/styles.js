@@ -33,7 +33,7 @@ export const styles = StyleSheet.create({
         borderRadius: 20,
         padding: 15,
         borderWidth: 3,
-        height: '75%',
+        height: '77%',
         width: 375,
         display: 'flex',
         flexDirection: 'column',
@@ -303,17 +303,21 @@ export const styles = StyleSheet.create({
         
       },
       tableContainer: {
-        marginTop: 20,
-        overflow: 'hidden',
+        marginTop: 10,
         height: 150,
         borderRadius: 10,
-   
+            // Shadow for iOS
         shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1, // Increase the shadow opacity value
+        shadowOffset: {
+          width: 0,
+          height: 2,
+        },
+        shadowOpacity: 0.15,
         shadowRadius: 3,
-        
+        backgroundColor: '#FFF',
+
       },
+
       tableRow: {
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -327,10 +331,7 @@ export const styles = StyleSheet.create({
         textAlign: 'center',
       },
       table: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.0, // Increase the shadow opacity value
-        shadowRadius: 3,
+
         
       },
       chart: {
@@ -341,7 +342,49 @@ export const styles = StyleSheet.create({
         shadowOpacity: 0.15, // Increase the shadow opacity value
         shadowRadius: 3,
         paddingBottom: 0,
+      },
+      metricButton: {
+        backgroundColor: "#2196F3",
+        borderRadius: 15,
+        marginLeft: 10,
+        padding: 5,
+        elevation: 2,
+
+
+        alignItems: 'center',
+
+        alignSelf: 'center',
+
+
+        //borderWidth: 1,
+      },
+      metricButtonContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: 15,
+      },
+
+      averageContainer: {
+        alignSelf: 'center',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+
+        borderRadius: 10,
+            // Shadow for iOS
+        shadowColor: '#000',
+        shadowOffset: {
+          width: 0,
+          height: 2,
+        },
+        shadowOpacity: 0.15,
+        shadowRadius: 3,
+        backgroundColor: '#FFF',
+        padding: 10,
+      
       }
+      
 
 });
 
