@@ -8,43 +8,26 @@ import TimePickerModal from './TimePickerModal';
 import ResetButton from './ResetButton';
 
 const CountdownTimer = ({ initialHours = 0, initialMinutes = 0, initialSeconds = 0 }) => {
-    // useContext hook to access the global state and dispatch function
-    const { state, dispatch } = useContext(AppContext);
+    
+  const { state, dispatch } = useContext(AppContext);
     const selected_pet = state.selected_pet[0];
-
-    // Check if selected_pet exists before accessing its properties
     const idleImage = selected_pet ? selected_pet.image : null;
     const walkingImage = selected_pet ? selected_pet.walking_image : null;
     const metrics = state.metrics;
-
-    // useState hooks to manage local state of hours, minutes, and seconds
     const [hours, setHours] = useState(initialHours);
     const [minutes, setMinutes] = useState(initialMinutes);
     const [seconds, setSeconds] = useState(initialSeconds);
-    // useState hook to control the visibility of the time picker modal
     const [isPickerVisible, setPickerVisibility] = useState(false);
-    // useState hook to control the visibility of the treasure chest
     const [showTreasureChest, setShowTreasureChest] = useState(false);
-
-    // Temp time for pickers.
     const [tempHours, setTempHours] = useState(hours);
     const [tempMinutes, setTempMinutes] = useState(minutes);
-
-    // useState hook for the gif animation display
-    //const [currentGif, setCurrentGif] = useState(require('../assets/wolf/firstEvo/wolf-first-idle.gif'));
     const [currentGif, setCurrentGif] = useState(idleImage)
-    
-    // useRef hook to track if the timer is running
     const isTimerRunning = useRef(true);
-    // useRef hook to track if the timer was reset
     const wasReset = useRef(false);
-
-    // New state to check if the timer is manually finished
     const [isManuallyFinished, setIsManuallyFinished] = useState(false);
     const [startHours, setStartHours] = useState(initialHours);
     const [startMinutes, setStartMinutes] = useState(initialMinutes);
 
-    // Function to reset the timer to default values
     const resetTimer = () => {
         setIsManuallyFinished(true); // Set the manual finish flag
         setHours(0);
@@ -78,10 +61,8 @@ const CountdownTimer = ({ initialHours = 0, initialMinutes = 0, initialSeconds =
                     if (hours === 0) {
                         // Logic to handle what happens when the timer reaches zero
                         if (!wasReset.current && !isManuallyFinished) {
-                          
                             dispatch({ type: "SET_INVENTORY_OPEN", payload: false})
                             setShowTreasureChest(true);
-                            console.log('this is total time before addition', state.totalTime);
                             const totalTimeInMinutes = (startHours * 60) + startMinutes;
                             let updatedTotalMinutes = totalTimeInMinutes;
                             dispatch({ type:'SET_TOTAL_TIME', payload: updatedTotalMinutes})
@@ -90,29 +71,13 @@ const CountdownTimer = ({ initialHours = 0, initialMinutes = 0, initialSeconds =
                             const formattedDate = (currentDate.getMonth() + 1).toString().padStart(2, '0') + '-' 
                                                 + currentDate.getDate().toString().padStart(2, '0') + '-' 
                                                 + currentDate.getFullYear();
-                            console.log('this is current date string', formattedDate);
 
                             let timeObject = {
                               date: formattedDate,
                               minutes: +totalTimeInMinutes // Convert string to a number
                             }
 
-                            console.log('this is the time', timeObject);
-                            console.log('this is timeObject date', timeObject.date)
-
-                            let testObject = {
-                              date: '12-13-2023',
-                              minutes: +totalTimeInMinutes
-                            }
-
                             dispatch({ type: 'ADD_METRIC', payload: timeObject });
-                            dispatch({ type: 'ADD_METRIC', payload: testObject })
-
-                            console.log('this is metrics inside countodnwtimer', metrics)
-
-                            //an object gets dispatched with time and date? 
-                            // then plot the array of objects
-                            // create variable for total time
 
                             const thresholds = new Map([
                               [15, 0.03],
@@ -143,7 +108,6 @@ const CountdownTimer = ({ initialHours = 0, initialMinutes = 0, initialSeconds =
                               payload: Math.min(state.expProgress + expIncrement, 1)
                             });
 
-                            console.log('this is total time after addition', state.totalTime)
                         }
                         setIsManuallyFinished(false); // Reset the manual finish flag
                         clearInterval(myInterval);  // Stop the timer

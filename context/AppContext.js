@@ -9,7 +9,6 @@ const initialState = {
     isInventoryOpen: false,
     isMetricsOpen: false,
     metrics: [],
-    // Need to add dates to track total time and date.
     totalTime: 0,
     expProgress: 0,
     selectedFruitId: null,
@@ -21,8 +20,8 @@ const initialState = {
         { id: 2, name: 'fire_peach', image: require('../assets/fruits/fire_peach.png') },
         { id: 3, name: 'fruit_group', image: require('../assets/fruits/fruit_group.png') },
         { id: 4, name: 'ice_pineapple', image: require('../assets/fruits/ice_pineapple.png') },
+        /*
         { id: 5, name: 'green_mango', image: require('../assets/fruits/green_mango.png') },
-
         { id: 6, name: 'mangosteen', image: require('../assets/fruits/mangosteen.png') },
         { id: 7, name: 'pear', image: require('../assets/fruits/pear.png') },
         { id: 8, name: 'rainbow_pineapple', image: require('../assets/fruits/rainbow_pineapple.png')},
@@ -32,7 +31,7 @@ const initialState = {
         { id: 11, name: 'strawberry', image: require('../assets/fruits/water_strawberry.png')},
         { id: 12, name: 'earth_apple', image: require('../assets/fruits/earth_apple.png')},
         
-        /*
+        
         { id: 1, name: 'blue_pineapple', image: require('../assets/fruits/blue_pineapple.png') }, 
         { id: 2, name: 'fire_peach', image: require('../assets/fruits/fire_peach.png') },
         { id: 3, name: 'fruit_group', image: require('../assets/fruits/fruit_group.png') },
@@ -71,7 +70,7 @@ const initialState = {
             name: "bird_egg",
             expProgress: 0,
         }, 
-        */
+        
         { 
             id: 109203, 
             type: 'egg',
@@ -101,9 +100,10 @@ const initialState = {
             walking_image: require('../assets/wolf/egg/egg-idle.gif'),
             name: "wolf_egg",
             expProgress: 0,
-        },         
-        //{id: 1}, {id: 2},{ id: 3 }, 
-        { id: 4 },
+        },     
+        */    
+
+        {id: 1}, {id: 2},{ id: 3 }, { id: 4 },
         { id: 5 }, { id: 6 }, { id: 7 }, { id: 8 },
         { id: 9 }, { id: 10 }, { id: 11 }, { id: 12 },
         { id: 13 }, { id: 14 }, { id: 15 }, { id: 16 },
