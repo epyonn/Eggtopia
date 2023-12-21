@@ -45,49 +45,6 @@ const Chart = () => {
     }],
   };
 
-  
-  /*
-  const chartConfig = {
-    backgroundColor: '#e26a00',
-    // backgroundGradientFrom: '#0081A7',
-    backgroundGradientFrom: 'rgb(33, 150, 243)',
-    backgroundGradientTo: '#FED9B7',
-    decimalPlaces: 1,
-    color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-    labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-    style: {
-      borderRadius: 16,
-    },
-  };
-
-  const dataPointWidth = 50; // Width per data point
-  const totalDataPoints = metrics.length;
-  const dynamicChartWidth = totalDataPoints * dataPointWidth;
-  const screenWidth = Dimensions.get('window').width;
-  
-  return (
-    <View >
-
-
-    <ScrollView 
-      horizontal={true} 
-      showsHorizontalScrollIndicator={true}
-      style={styles.chart}
-    >
-
-      <LineChart
-        data={metrics}
-        width={dynamicChartWidth} // Dynamic width
-        height={320}
-        verticalLabelRotation={30}
-        chartConfig={chartConfig}
-        bezier
-        fromZero
-      />
-    </ScrollView>
-  </View>
-  )*/
-
   return (
     <View 
       
@@ -121,12 +78,9 @@ const Chart = () => {
             backgroundGradientTo: '#ffffff',
           
             decimalPlaces: 1,
-            // color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`, // white 
-            // color: (opacity = 1) => `rgba(134, 65, 244, ${opacity})`, // light purple
+
             color: (opacity = 1) => `rgba(98, 0, 234, ${opacity})`, // darker purple
-            //color: (opacity = 1) => `rgba(33, 150, 243,1.0)`, // For the line color to be blue
-             //labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, // For the x and y-axis labels black
-            //labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`, // For the x and y-axis labels white
+
             style: {
               paddingBottom: 20,
             },

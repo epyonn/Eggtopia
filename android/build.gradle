@@ -5,7 +5,7 @@ buildscript {
         compileSdkVersion = 33
         targetSdkVersion = 33
         ndkVersion = "23.1.7779620"
-        kotlinVersion = rootProject.ext.has("kotlinVersion") ? rootProject.ext.get('kotlinVersion') : '1.7.10'
+        kotlinVersion = '1.7.10'
     }
     repositories {
         google()
@@ -14,7 +14,7 @@ buildscript {
     dependencies {
         classpath("com.android.tools.build:gradle:7.0.4") // Update to Android Gradle Plugin version 7.0.4
         classpath("com.facebook.react:react-native-gradle-plugin:0.66.0") // React Native Gradle Plugin version 0.66.0
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion" // Kotlin Gradle Plugin
 
     }
 }

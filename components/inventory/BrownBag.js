@@ -18,8 +18,6 @@ const BrownBag = () => {
     const isInventoryOpen = state.isInventoryOpen;
     const totalTime = state.totalTime;
     const {activeTab} = state;
-
-    // Define local component states for inventory modal visibility and selected fruit properties.
     const [selectedFruit, setSelectedFruit] = useState(null);
     const selectedFruitId = state.selectedFruitId;
     const selectedPetId = state.selectedPetId;
@@ -32,7 +30,7 @@ const BrownBag = () => {
             return;
         }
     });
-    const [expGif, setExpGif] = useState(false);
+
     
     // Function to use a selected fruit, updating inventory and user experience points.
     const useItem = () => {
