@@ -18,10 +18,11 @@ const BrownBag = () => {
     const isInventoryOpen = state.isInventoryOpen;
     const totalTime = state.totalTime;
     const {activeTab} = state;
-    const [selectedFruit, setSelectedFruit] = useState(null);
+    // const [selectedFruit, setSelectedFruit] = useState(null);
     const selectedFruitId = state.selectedFruitId;
     const selectedPetId = state.selectedPetId;
     const [isEvolutionModalVisible, setEvolutionModalVisible] = useState(false);
+    const [expGif, setExpGif] = useState(false);
     
     // Sounds and Exp Gif
     const fruitSound = new Sound(require('../../assets/sounds/munching-food.mp3'), (error) => {
@@ -65,12 +66,10 @@ const BrownBag = () => {
             dispatch({ type: 'SET_INVENTORY', payload: updatedInventory}); 
             dispatch({ type: 'SET_FRUIT_ID', payload: null});
             dispatch({ type: 'SET_PET_ID', payload: null});
-            
-            // Close inventory
             dispatch({ type: 'SET_INVENTORY_OPEN', payload: false});
 
         } else if (activeTab === 'Pets') {
-            setSelectedFruitId(null);
+            // setSelectedFruitId(null);
             // Pet that will be added to the main screen based on Id chosen
             const selectedPetData = pet_inventory.find(pet => pet.id === selectedPetId)
             if(selectedPetData) {
@@ -93,7 +92,7 @@ const BrownBag = () => {
                     updatedPetInventory.unshift(selectedPet);
                     dispatch({ type: 'SET_PET_INVENTORY', payload: updatedPetInventory });
                     dispatch({ type:'SELECT_PET', payload: selectedPetData });
-                    setSelectedPetId(null);
+                    // setSelectedPetId(null);
                     // Use dispatch instead of setting functions
                     dispatch({ type: 'SET_INVENTORY_OPEN', payload: false});
                 }

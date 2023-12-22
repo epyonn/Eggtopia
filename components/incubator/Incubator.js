@@ -1,6 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { AppContext } from '../../context/AppContext';
 import { Image, TouchableOpacity, View, StyleSheet, Modal, Text, ScrollView } from 'react-native';
+import { chunkArray } from '../../utils/UtilityFunctions';
 
 const Incubator = () => {
     const { state, dispatch } = useContext(AppContext);
@@ -8,7 +9,8 @@ const Incubator = () => {
     const selectedPet = selected_pet[0];
     const [isIncubatorOpen, setIncubator] = useState(false);
     const [selectedEggId, setSelectedEggId] = useState(null);
-
+    
+    /*
     const chunkArray = (array, chunkSize) => {
         let results = [];
         for (let i = 0; i < array.length; i += chunkSize) {
@@ -16,6 +18,7 @@ const Incubator = () => {
         }
         return results;
     }
+    */
 
     const useItem = () => {
         const selectedPetData = egg_inventory.find(egg => egg.id === selectedEggId);
