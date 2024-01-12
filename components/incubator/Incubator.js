@@ -10,16 +10,6 @@ const Incubator = () => {
     const [isIncubatorOpen, setIncubator] = useState(false);
     const [selectedEggId, setSelectedEggId] = useState(null);
     
-    /*
-    const chunkArray = (array, chunkSize) => {
-        let results = [];
-        for (let i = 0; i < array.length; i += chunkSize) {
-            results.push(array.slice(i, i + chunkSize));
-        }
-        return results;
-    }
-    */
-
     const useItem = () => {
         const selectedPetData = egg_inventory.find(egg => egg.id === selectedEggId);
         if (!selectedPetData) return;

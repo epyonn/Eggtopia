@@ -9,19 +9,6 @@ const screenWidth = Dimensions.get('window').width;
 const Chart = () => {
   const { state, dispatch } = useContext(AppContext);
   const metrics = state.metrics;
-  console.log('metrics in linechart ', metrics)
-
-  /*
-  useEffect(() => {
-
-    dispatch({ type: 'ADD_METRIC', payload:{ date: '12-14-2023', minutes: 10}})
-    dispatch({ type: 'ADD_METRIC', payload:{ date: '12-16-2023', minutes: 5}})
-  }, [])
-  */
-
-  // Transforming data for the chart
-  // const filteredMetrics = metrics.filter(metric => metric.minutes > 0);
-
   const filteredMetrics = metrics.reduce((result, metric) => {
     const existingMetric = result.find(item => item.date === metric.date);
 
