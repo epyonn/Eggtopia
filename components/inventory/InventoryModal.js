@@ -76,20 +76,14 @@ const InventoryModal = ({
                     }, 3000)
                     return { id: selectedFruitId };
                 }
-                return item;  // returning the item unchanged if the condition isn't met
+                return item; 
             });
             dispatch({ type: 'SET_INVENTORY', payload: updatedInventory}) 
-            // Reset selected fruit states and close the inventory
-
             dispatch({ type: 'SET_FRUIT_ID', payload: null });
             dispatch({ type: 'SET_PET_ID', payload: null });
-
-            // Close inventory
             dispatch({ type: 'SET_INVENTORY_OPEN', payload: false});
             
         } else if (activeTab === 'Pets') {
-
-            // Pet that will be added to the main screen based on Id chosen
             const selectedPetData = pet_inventory.find(pet => pet.id === selectedPetId)
             if(selectedPetData) {
                 if(selectedPet.type === "egg") {
